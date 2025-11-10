@@ -17,13 +17,13 @@ namespace EGO_Library.Models
         public string StatusEffect { get; set; }
         public string Icon { get; set; } 
         public string Description { get; set; } 
-        public List<string> Sources { get; set; }
+        //public List<string> Sources { get; set; }
         public List<string> FusionRecipes { get; set; }
 
         public EgoGift() { }
 
         
-        public EgoGift(string id, string name, int tier, string status, string description)
+        public EgoGift(int id, string name, int tier, string status, string description)
         {
             Id = id;
             Name = name;

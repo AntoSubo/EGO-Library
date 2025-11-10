@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace EGO_Library.Models
 {
-    public class Recipes
+    public class Sourses
     {
         public int Id { get; set; }
-        public string Result { get; set; }
-        public List<string> Components { get; set; }
+        public string Location { get; set; }
+        public string Type { get; set; }
     }
 }
