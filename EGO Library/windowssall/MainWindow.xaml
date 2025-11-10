@@ -10,9 +10,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220"/>
-            <ColumnDefinition Width="373*"/>
-            <ColumnDefinition Width="307*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Background="#252526">
@@ -36,7 +35,6 @@
                         <WrapPanel Orientation="Horizontal" ItemWidth="200" ItemHeight="150" Margin="0,0,10,10"/>
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
-
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border Background="#2D2D30" Margin="5" Padding="10">
