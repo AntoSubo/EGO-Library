@@ -12,16 +12,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace EGO_Library.windowssall
+namespace EGO_Library.windowsall
 {
-    /// <summary>
-    /// Логика взаимодействия для About.xaml
-    /// </summary>
     public partial class About : Window
     {
         public About()
         {
             InitializeComponent();
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

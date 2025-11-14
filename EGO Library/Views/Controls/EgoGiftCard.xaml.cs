@@ -10,26 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace EGO_Library.windowssall
+namespace EGO_Library.Controls
 {
     /// <summary>
-    /// Логика взаимодействия для EGOgift.xaml
+    /// Логика взаимодействия для EgoGiftCard.xaml
     /// </summary>
-    public partial class EGOgift : Window
+    public partial class EgoGiftCard : UserControl
     {
-        public EGOgift()
+        public EgoGiftCard()
         {
             InitializeComponent();
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow main = new MainWindow();
-            main.Show();
-            this.Close(); 
-        }
-
     }
 }

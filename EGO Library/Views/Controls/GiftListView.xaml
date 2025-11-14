@@ -1,22 +1,20 @@
-﻿<Window x:Class="EGO_Library.windowssall.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:EGO_Library.ViewModels"
-        mc:Ignorable="d"
-        Title="EGO Library" Height="600" Width="800"
-        Foreground="White" FontFamily="Segoe UI">
+﻿<UserControl x:Class="EGO_Library.Controls.GiftListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:vm="clr-namespace:EGO_Library.ViewModels"
+             Width="Auto" Height="Auto"
+             Foreground="White" FontFamily="Segoe UI">
 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
-            <!-- левая панель фильтров -->
             <ColumnDefinition Width="*"/>
-            <!-- правая область с карточками -->
         </Grid.ColumnDefinitions>
 
-        <!-- Левая панель -->
+        <!-- Левая панель фильтров -->
         <Border Grid.Column="0" Background="#FFF" CornerRadius="8" Padding="10" Margin="0,0,10,0" >
             <StackPanel>
                 <TextBlock Text="Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
@@ -46,7 +44,7 @@
             </StackPanel>
         </Border>
 
-        <!-- Правая часть -->
+        <!-- Правая область с карточками -->
         <DockPanel Grid.Column="1">
             <!-- Верхняя панель -->
             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
@@ -89,4 +87,4 @@
             </ScrollViewer>
         </DockPanel>
     </Grid>
-</Window>
+</UserControl>
