@@ -1,20 +1,27 @@
-﻿using System;
-using EGO_Library.ViewModels;
+﻿using EGO_Library.ViewModels;
+using System.ComponentModel;
 
 namespace EGO_Library.Services
 {
-    public class NavigationService
+    public class NavigationService : INotifyPropertyChanged
     {
-        private readonly Action<BaseViewModel> _navigate;
+        private BaseViewModel? _currentViewModel;
 
-        public NavigationService(Action<BaseViewModel> navigate)
+        public BaseViewModel? CurrentViewModel
         {
-            _navigate = navigate;
+            get => _currentViewModel;
+            private set
+            {
+                _currentViewModel = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentViewModel)));
+            }
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public void Navigate(BaseViewModel viewModel)
         {
-            _navigate(viewModel);
+            CurrentViewModel = viewModel;
         }
     }
 }

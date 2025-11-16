@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EGO_Library.Commands;
+using EGO_Library.Services;
 
 namespace EGO_Library.ViewModels
 {
-    class RecipeViewModel
+    public class RecipeViewModel : BaseViewModel
     {
+        public RelayCommand GoBackCommand { get; }
+
+        public RecipeViewModel(NavigationService navigation)
+        {
+            GoBackCommand = new RelayCommand(_ =>
+            {
+                navigation.Navigate(new GiftListViewModel(navigation));
+            });
+        }
     }
 }

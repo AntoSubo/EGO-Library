@@ -1,18 +1,18 @@
-﻿using System.ComponentModel;
+﻿using EGO_Library.Commands;
+using EGO_Library.Services;
 
 namespace EGO_Library.ViewModels
 {
-    public class AboutViewModel : INotifyPropertyChanged
+    public class AboutViewModel : BaseViewModel
     {
-        public string AppName { get; set; } = "EGO Library";
-        public string Author { get; set; } = "[ФИО]";
-        public string Version { get; set; } = "1.0.0";
-        public string Technologies { get; set; } = "WPF, C#";
+        public RelayCommand GoBackCommand { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
+        public AboutViewModel(NavigationService navigation)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            GoBackCommand = new RelayCommand(_ =>
+            {
+                navigation.Navigate(new GiftListViewModel(navigation));
+            });
         }
     }
 }

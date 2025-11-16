@@ -1,11 +1,24 @@
-﻿namespace EGO_Library.Models
+﻿// Models/Sources.cs
+namespace EGO_Library.Models
 {
-    public class Sources
+    public class Source
     {
-        public int Id { get; set; }
         public string Location { get; set; }
-        public string Type { get; set; }
+        public string Type { get; set; } // MirrorDungeon, Fusion, Event, etc.
+        public int Floor { get; set; }
+        public double DropRate { get; set; }
 
-        public List<EgoGift> EgoGifts { get; set; } // навигационное свойство для EF Core
+        public Source(string location, string type, int floor = 0, double dropRate = 0)
+        {
+            Location = location;
+            Type = type;
+            Floor = floor;
+            DropRate = dropRate;
+        }
+
+        public override string ToString()
+        {
+            return $"{Location} (Floor {Floor})";
+        }
     }
 }

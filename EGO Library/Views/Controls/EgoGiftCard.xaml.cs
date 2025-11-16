@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EGO_Library.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +16,21 @@ using System.Windows.Shapes;
 
 namespace EGO_Library.Controls
 {
-    /// <summary>
-    /// Логика взаимодействия для EgoGiftCard.xaml
-    /// </summary>
     public partial class EgoGiftCard : UserControl
     {
-        public EgoGiftCard()
-        {
-            InitializeComponent();
-        }
+            public EgoGiftCard()
+            {
+                InitializeComponent();
+            }
+
+            public static readonly DependencyProperty GiftProperty =
+                DependencyProperty.Register("Gift", typeof(object), typeof(EgoGiftCard));
+
+            public object Gift
+            {
+                get { return GetValue(GiftProperty); }
+                set { SetValue(GiftProperty, value); }
+            }
+        
     }
 }

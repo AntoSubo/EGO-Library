@@ -12,12 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
-namespace EGO_Library.Controls
+using EGO_Library.Views.Controls;
+namespace EGO_Library.Views.Controls
 {
-    /// <summary>
-    /// Логика взаимодействия для AboutView.xaml
-    /// </summary>
     public partial class AboutView : UserControl
     {
         public AboutView()

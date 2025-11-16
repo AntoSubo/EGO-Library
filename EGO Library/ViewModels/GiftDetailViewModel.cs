@@ -1,30 +1,18 @@
-﻿using EGO_Library.Models;
-using System.ComponentModel;
+﻿using EGO_Library.Commands;
+using EGO_Library.Services;
 
 namespace EGO_Library.ViewModels
 {
-    public class GiftDetailViewModel : INotifyPropertyChanged
+    public class GiftDetailViewModel : BaseViewModel
     {
-        private EgoGift _selectedGift;
-        public EgoGift SelectedGift
+        public RelayCommand GoBackCommand { get; }
+
+        public GiftDetailViewModel(NavigationService navigation)
         {
-            get => _selectedGift;
-            set
+            GoBackCommand = new RelayCommand(_ =>
             {
-                _selectedGift = value;
-                OnPropertyChanged(nameof(SelectedGift));
-            }
-        }
-
-        public GiftDetailViewModel(EgoGift gift)
-        {
-            SelectedGift = gift;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                navigation.Navigate(new GiftListViewModel(navigation));
+            });
         }
     }
 }
