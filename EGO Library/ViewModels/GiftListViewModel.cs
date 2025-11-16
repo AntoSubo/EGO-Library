@@ -1,20 +1,35 @@
 ﻿using EGO_Library.Models;
+using EGO_Library.Services;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EGO_Library.ViewModels
 {
-    public class GiftListViewModel
+    public class GiftListViewModel : BaseViewModel
     {
-        public ObservableCollection<EgoGift> Gifts { get; set; }
+        private readonly DataService _dataService;
+        private ObservableCollection<EgoGift> _gifts;
+
+        public ObservableCollection<EgoGift> Gifts
+        {
+            get => _gifts;
+            set { _gifts = value; OnPropertyChanged(); }
+        }
 
         public GiftListViewModel()
         {
-            Gifts = new ObservableCollection<EgoGift>
-            {
-                new EgoGift { Name = "Wealth", Tier = 4, Status = "Charge", Icon = "💰" },
-                new EgoGift { Name = "Inferno", Tier = 3, Status = "Burn", Icon = "🔥" },
-                new EgoGift { Name = "Torrent", Tier = 2, Status = "Bleed", Icon = "💧" }
-            };
+            _dataService = new DataService();
+            _ = LoadGiftsAsync(); // Запускаем асинхронно без await
+        }
+
+        private async Task LoadGiftsAsync()
+        {
+            // Инициализируем базу при первом запуске
+            await DatabaseInitializer.InitializeAsync();
+
+            var gifts = await _dataService.GetAllGiftsAsync();
+            Gifts = new ObservableCollection<EgoGift>(gifts);
         }
     }
 }
