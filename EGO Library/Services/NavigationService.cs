@@ -1,27 +1,37 @@
-﻿using EGO_Library.ViewModels;
-using System.ComponentModel;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace EGO_Library.Services
 {
-    public class NavigationService : INotifyPropertyChanged
+    public class NavigationService
     {
-        private BaseViewModel? _currentViewModel;
+        private Frame _mainFrame;
 
-        public BaseViewModel? CurrentViewModel
+        public NavigationService(Frame mainFrame)
         {
-            get => _currentViewModel;
-            private set
-            {
-                _currentViewModel = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentViewModel)));
-            }
+            _mainFrame = mainFrame;
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public void Navigate(BaseViewModel viewModel)
+        // Добавь этот конструктор для MainViewModel
+        public NavigationService()
         {
-            CurrentViewModel = viewModel;
+            // Для использования без Frame
+        }
+
+        public void NavigateToPage(Page page)
+        {
+            _mainFrame?.Navigate(page);
+        }
+
+        public void Navigate(object viewModel)
+        {
+            // Заглушка - в реальности здесь должна быть логика навигации
+        }
+
+        public void GoBack()
+        {
+            if (_mainFrame?.CanGoBack == true)
+                _mainFrame.GoBack();
         }
     }
 }

@@ -9,11 +9,11 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!-- Левая панель фильтров -->
         <Border Grid.Column="0" Background="#FFF" CornerRadius="8"
                 Padding="10" Margin="0,0,10,0">
             <StackPanel>
                 <TextBlock Text="Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-
                 <TextBlock Text="Status" FontWeight="SemiBold"/>
                 <StackPanel>
                     <CheckBox Content="Burn"/>
@@ -21,7 +21,6 @@
                     <CheckBox Content="Charge"/>
                     <CheckBox Content="Poise"/>
                 </StackPanel>
-
                 <TextBlock Text="Level" FontWeight="SemiBold" Margin="0,10,0,5"/>
                 <ComboBox Width="100" SelectedIndex="0">
                     <ComboBoxItem Content="Tier 1"/>
@@ -30,30 +29,46 @@
                     <ComboBoxItem Content="Tier 4"/>
                     <ComboBoxItem Content="Tier 5"/>
                 </ComboBox>
-
                 <TextBox Margin="0,20,0,5" Height="25"/>
                 <Button Content="Search" Height="25" Width="100"/>
             </StackPanel>
         </Border>
 
+        <!-- Правая панель с дарами -->
         <DockPanel Grid.Column="1">
             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
-                <TextBlock Text="EGO Library"
-                           FontSize="22"
-                           FontWeight="Bold"/>
-                <Button Content="Help"
-                        Width="70"
-                        Height="25"
-                        Margin="10,0,0,0"
-                        DockPanel.Dock="Right"/>
+                <TextBlock Text="EGO Library" FontSize="22" FontWeight="Bold"/>
+                <Button Content="Help" Width="70" Height="25" Margin="10,0,0,0" DockPanel.Dock="Right"/>
             </DockPanel>
 
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <WrapPanel Margin="0,10,0,0"
-                           ItemWidth="130"
-                           ItemHeight="150"
-                           Orientation="Horizontal">
-                </WrapPanel>
+                <ItemsControl ItemsSource="{Binding Gifts}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Margin="0,10,0,0"
+                                       ItemWidth="130"
+                                       ItemHeight="150"
+                                       Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#2D2D30" CornerRadius="8" Margin="5" Padding="10" 
+                                    Width="120" Height="140" Cursor="Hand">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Icon}" FontSize="24" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" TextAlignment="Center" 
+                                               TextTrimming="CharacterEllipsis" Foreground="Black"/>
+                                    <TextBlock Text="{Binding Tier, StringFormat='Tier {0}'}" 
+                                               FontSize="11" TextAlignment="Center" Foreground="#666666"/>
+                                    <TextBlock Text="{Binding Status}" FontSize="11" 
+                                               TextAlignment="Center" Foreground="#888888"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ScrollViewer>
         </DockPanel>
     </Grid>

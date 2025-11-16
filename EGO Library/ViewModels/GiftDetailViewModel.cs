@@ -11,7 +11,7 @@ namespace EGO_Library.ViewModels
         {
             GoBackCommand = new RelayCommand(_ =>
             {
-                navigation.Navigate(new GiftListViewModel(navigation));
+                //navigation.Navigate(new GiftListViewModel(navigation));
             });
         }
     }

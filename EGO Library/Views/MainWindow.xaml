@@ -1,9 +1,11 @@
 ﻿<Window x:Class="EGO_Library.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="EGO Library"
-        Height="450" Width="800">
+        Title="EGO Library" Height="600" Width="800"
+        Background="#1E1E1E" Foreground="White">
 
-    <Frame x:Name="MainFrame"
-           NavigationUIVisibility="Hidden"/>
+    <Grid>
+        <!-- Пока просто покажем один UserControl -->
+        <ContentControl x:Name="MainContent"/>
+    </Grid>
 </Window>

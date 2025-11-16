@@ -1,4 +1,4 @@
-﻿using System.Windows;
+﻿using EGO_Library.ViewModels;
 using System.Windows.Controls;
 
 namespace EGO_Library.Views.Controls
@@ -8,7 +8,7 @@ namespace EGO_Library.Views.Controls
         public GiftListView()
         {
             InitializeComponent();
+            DataContext = new GiftListViewModel(); // Важно
         }
-
     }
 }

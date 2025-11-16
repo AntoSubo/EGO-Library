@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using EGO_Library.Views.Controls;
+using System.Windows;
 
 namespace EGO_Library.Views
 {
@@ -8,8 +8,9 @@ namespace EGO_Library.Views
         public MainWindow()
         {
             InitializeComponent();
-        }
 
-        public Frame FrameControl => MainFrame;
+            // Просто показываем один UserControl
+            MainContent.Content = new GiftListView();
+        }
     }
 }

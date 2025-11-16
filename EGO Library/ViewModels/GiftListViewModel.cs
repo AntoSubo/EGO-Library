@@ -1,22 +1,20 @@
-﻿using EGO_Library.Commands;
-using EGO_Library.Services;
+﻿using EGO_Library.Models;
+using System.Collections.ObjectModel;
 
 namespace EGO_Library.ViewModels
 {
-    public class GiftListViewModel : BaseViewModel
+    public class GiftListViewModel
     {
-        public RelayCommand OpenGiftCommand { get; }
+        public ObservableCollection<EgoGift> Gifts { get; set; }
 
-        private readonly NavigationService _navigation;
-
-        public GiftListViewModel(NavigationService navigation)
+        public GiftListViewModel()
         {
-            _navigation = navigation;
-
-            OpenGiftCommand = new RelayCommand(_ =>
+            Gifts = new ObservableCollection<EgoGift>
             {
-                _navigation.Navigate(new GiftDetailViewModel(_navigation));
-            });
+                new EgoGift { Name = "Wealth", Tier = 4, Status = "Charge", Icon = "💰" },
+                new EgoGift { Name = "Inferno", Tier = 3, Status = "Burn", Icon = "🔥" },
+                new EgoGift { Name = "Torrent", Tier = 2, Status = "Bleed", Icon = "💧" }
+            };
         }
     }
 }
