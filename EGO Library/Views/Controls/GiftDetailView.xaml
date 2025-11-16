@@ -16,8 +16,8 @@
                        DockPanel.Dock="Left"
                        VerticalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                <Button Content="Help" Width="60" Margin="0,0,5,0"/>
-                <Button Content="Exit" Width="60"/>
+                <Button Content="Help" Width="60" Margin="0,0,5,0" Click="HelpButton_Click"/>
+                <Button Content="Back" Width="60" Click="BackButton_Click"/>
             </StackPanel>
         </DockPanel>
 
@@ -40,11 +40,13 @@
                 <TextBlock Text="Description:" FontWeight="SemiBold"/>
                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
 
+                <!-- Кликабельные Recipes -->
                 <TextBlock Text="Recipes" FontWeight="SemiBold" Margin="0,0,0,5"/>
                 <ItemsControl ItemsSource="{Binding Recipes}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="• {Binding}" Margin="10,0,0,2"/>
+                            <TextBlock Text="• {Binding}" Margin="10,0,0,2" Cursor="Hand"
+                                       MouseDown="RecipeItem_MouseDown"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -57,13 +59,6 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-
-                <Button Content="Back to List"
-                        Command="{Binding BackCommand}"
-                        Width="120"
-                        Height="30"
-                        Margin="0,20,0,0"
-                        HorizontalAlignment="Left"/>
             </StackPanel>
         </Grid>
     </Grid>

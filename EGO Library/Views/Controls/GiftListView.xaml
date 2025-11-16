@@ -35,13 +35,25 @@
         </Border>
 
         <!-- Правая панель с дарами -->
-        <DockPanel Grid.Column="1">
-            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Верхняя панель с кнопками -->
+            <DockPanel Grid.Row="0" Margin="0,0,0,10">
                 <TextBlock Text="EGO Library" FontSize="22" FontWeight="Bold"/>
-                <Button Content="Help" Width="70" Height="25" Margin="10,0,0,0" DockPanel.Dock="Right"/>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <Button Content="About" Width="70" Height="25" Margin="5,0,0,0"
+                            Click="AboutButton_Click"/>
+                    <Button Content="Help" Width="70" Height="25" Margin="5,0,0,0"
+                            Click="HelpButton_Click"/>
+                </StackPanel>
             </DockPanel>
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <!-- Список даров -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Gifts}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -55,21 +67,22 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Background="#2D2D30" CornerRadius="8" Margin="5" Padding="10" 
-                                    Width="120" Height="140" Cursor="Hand">
+                                    Width="120" Height="140" Cursor="Hand"
+                                    MouseDown="GiftItem_MouseDown">
                                 <StackPanel>
                                     <TextBlock Text="{Binding Icon}" FontSize="24" HorizontalAlignment="Center"/>
                                     <TextBlock Text="{Binding Name}" FontWeight="Bold" TextAlignment="Center" 
-                                               TextTrimming="CharacterEllipsis" Foreground="Black"/>
+                                               TextTrimming="CharacterEllipsis" Foreground="White"/>
                                     <TextBlock Text="{Binding Tier, StringFormat='Tier {0}'}" 
-                                               FontSize="11" TextAlignment="Center" Foreground="#666666"/>
+                                               FontSize="11" TextAlignment="Center" Foreground="#CCCCCC"/>
                                     <TextBlock Text="{Binding Status}" FontSize="11" 
-                                               TextAlignment="Center" Foreground="#888888"/>
+                                               TextAlignment="Center" Foreground="#AAAAAA"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-        </DockPanel>
+        </Grid>
     </Grid>
 </UserControl>

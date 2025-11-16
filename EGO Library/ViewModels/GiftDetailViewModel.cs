@@ -1,18 +1,25 @@
-﻿using EGO_Library.Commands;
-using EGO_Library.Services;
+﻿using EGO_Library.Models;
+using System.Collections.ObjectModel;
 
 namespace EGO_Library.ViewModels
 {
-    public class GiftDetailViewModel : BaseViewModel
+    public class GiftDetailViewModel
     {
-        public RelayCommand GoBackCommand { get; }
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public string Description { get; set; }
+        public string ImagePath { get; set; }
+        public ObservableCollection<string> Recipes { get; set; }
+        public ObservableCollection<string> Sources { get; set; }
 
-        public GiftDetailViewModel(NavigationService navigation)
+        public GiftDetailViewModel(EgoGift gift)
         {
-            GoBackCommand = new RelayCommand(_ =>
-            {
-                //navigation.Navigate(new GiftListViewModel(navigation));
-            });
+            Name = gift.Name;
+            Status = gift.Status;
+            Description = gift.Description;
+            ImagePath = gift.Icon; // или путь к изображению
+            Recipes = new ObservableCollection<string>(gift.FusionRecipes);
+            Sources = new ObservableCollection<string>(gift.Sources);
         }
     }
 }

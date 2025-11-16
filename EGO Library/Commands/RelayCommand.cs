@@ -1,35 +1,23 @@
-﻿using System;
-using System.Windows.Input;
+﻿using EGO_Library.Commands;
+using EGO_Library.Views;
+using System.Windows;
 
-namespace EGO_Library.Commands
+namespace EGO_Library.Services
 {
-    public class RelayCommand : ICommand
+    public class NavigationCommands
     {
-        private readonly Action<object?> _execute;
-        private readonly Func<object?, bool>? _canExecute;
+        private static MainWindow MainWindow => Application.Current.MainWindow as MainWindow;
 
-        public RelayCommand(Action<object?> execute)
-        {
-            _execute = execute;
-            _canExecute = null;
-        }
+        public static RelayCommand NavigateToGiftListCommand { get; } = new RelayCommand(
+            _ => MainWindow?.NavigateToGiftList());
 
-        public RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-        }
+        public static RelayCommand NavigateToRecipesCommand { get; } = new RelayCommand(
+            _ => MainWindow?.NavigateToRecipes());
 
-        public bool CanExecute(object? parameter) =>
-            _canExecute?.Invoke(parameter) ?? true;
+        public static RelayCommand NavigateToAboutCommand { get; } = new RelayCommand(
+            _ => MainWindow?.NavigateToAbout());
 
-        public void Execute(object? parameter) =>
-            _execute(parameter);
-
-        public event EventHandler? CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
-        }
+        public static RelayCommand NavigateToGiftDetailCommand { get; } = new RelayCommand(
+            _ => MainWindow?.NavigateToGiftDetail());
     }
 }

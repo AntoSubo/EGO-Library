@@ -9,5 +9,11 @@ namespace EGO_Library.Views.Controls
         {
             InitializeComponent();
         }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            mainWindow?.NavigateToGiftDetail(); // Возврат к деталям дара
+        }
     }
 }
