@@ -18,8 +18,8 @@ namespace EGO_Library.ViewModels
             Status = gift.Status;
             Description = gift.Description;
             ImagePath = gift.Icon; // или путь к изображению
-            Recipes = new ObservableCollection<string>(gift.FusionRecipes);
-            Sources = new ObservableCollection<string>(gift.Sources);
+            //Recipes = new ObservableCollection<string>(gift.FusionRecipes);
+            //Sources = new ObservableCollection<string>(gift.Sources);
         }
     }
 }

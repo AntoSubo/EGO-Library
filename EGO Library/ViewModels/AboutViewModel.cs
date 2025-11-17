@@ -1,5 +1,4 @@
-﻿using EGO_Library.Commands;
-using EGO_Library.Services;
+﻿using EGO_Library.Services;
 
 namespace EGO_Library.ViewModels
 {
@@ -7,12 +6,12 @@ namespace EGO_Library.ViewModels
     {
         public RelayCommand GoBackCommand { get; }
 
-        public AboutViewModel(NavigationService navigation)
-        {
-            GoBackCommand = new RelayCommand(_ =>
-            {
-                //navigation.Navigate(new GiftListViewModel(navigation));
-            });
-        }
+        //public AboutViewModel(NavigationService navigation)
+        //{
+        //    GoBackCommand = new RelayCommand(_ =>
+        //    {
+        //        //navigation.Navigate(new GiftListViewModel(navigation));
+        //    });
+        //}
     }
 }

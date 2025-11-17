@@ -1,37 +1,98 @@
-﻿using EGO_Library.Views.Controls;
-using System.Windows;
-using System.Windows.Controls;
+﻿//using EGO_Library.Views.Controls;
+//using System.Windows;
+//using System.Windows.Controls;
 
-namespace EGO_Library.Views
+//namespace EGO_Library.Views
+//{
+//    public partial class MainWindow : Window
+//    {
+//        public MainWindow()
+//        {
+//            InitializeComponent();
+//            NavigateToGiftList();
+//        }
+
+//        public void NavigateToGiftList()
+//        {
+//            MainContent.Content = new GiftListView();
+//        }
+
+//        public void NavigateToRecipes()
+//        {
+//            MainContent.Content = new RecipeView();
+//        }
+
+//        public void NavigateToAbout()
+//        {
+//            MainContent.Content = new AboutView();
+//        }
+
+//        public void NavigateToGiftDetail()
+//        {
+//            MainContent.Content = new GiftDetailView();
+//        }
+
+//        public ContentControl MainContentControl => MainContent;
+//    }
+//}
+
+using EGO_Library.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
+using System.Linq;
+
+namespace EGO_Library.Services
 {
-    public partial class MainWindow : Window
+    public class DataService
     {
-        public MainWindow()
+
+        // EgoGift operations
+        public ObservableCollection<EgoGift> GetAllGifts()
         {
-            InitializeComponent();
-            NavigateToGiftList();
+            var gifts = _context.EgoGifts
+                .Include(g => g.Sources)
+                .OrderBy(g => g.Tier)
+                .ThenBy(g => g.Name)
+                .ToList();
+            return new ObservableCollection<EgoGift>(gifts);
         }
 
-        public void NavigateToGiftList()
+        public EgoGift GetGiftById(int id)
         {
-            MainContent.Content = new GiftListView();
+            return _context.EgoGifts
+                .Include(g => g.Sources)
+                .FirstOrDefault(g => g.Id == id);
         }
 
-        public void NavigateToRecipes()
+        public void AddGift(EgoGift gift)
         {
-            MainContent.Content = new RecipeView();
+            _context.EgoGifts.Add(gift);
+            _context.SaveChanges();
         }
 
-        public void NavigateToAbout()
+        public void UpdateGift(EgoGift gift)
         {
-            MainContent.Content = new AboutView();
+            _context.EgoGifts.Update(gift);
+            _context.SaveChanges();
         }
 
-        public void NavigateToGiftDetail()
+        public void DeleteGift(int id)
         {
-            MainContent.Content = new GiftDetailView();
+            var gift = _context.EgoGifts.Find(id);
+            if (gift != null)
+            {
+                _context.EgoGifts.Remove(gift);
+                _context.SaveChanges();
+            }
         }
 
-        public ContentControl MainContentControl => MainContent;
+        //// Recipe operations 
+        //public ObservableCollection<Recipe> GetAllRecipes()
+        //{
+        //    var recipes = _context.Recipes
+        //        .OrderBy(r => r.Name)
+        //        .ToList();
+        //    return new ObservableCollection<Recipe>(recipes);
+        //}
     }
 }

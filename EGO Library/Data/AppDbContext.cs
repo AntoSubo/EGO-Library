@@ -6,10 +6,11 @@ namespace EGO_Library.Data
     public class AppDbContext : DbContext
     {
         public DbSet<EgoGift> EgoGifts { get; set; }
+        public DbSet<Sources> Sources { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=egolibrary.db");
+            optionsBuilder.UseSqlite("Data Source=ego_library.db");
         }
     }
 }
