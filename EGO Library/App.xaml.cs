@@ -1,5 +1,4 @@
-﻿// App.xaml.cs
-using EGO_Library.Data;
+﻿using EGO_Library.Data;
 using EGO_Library.Services;
 using EGO_Library.ViewModels;
 using EGO_Library.Views;
@@ -15,24 +14,22 @@ namespace EGO_Library
 
             try
             {
-                // Create and initialize database
+                // Создаем и инициализируем базу данных
                 using var context = new AppDbContext();
                 context.Database.EnsureCreated();
 
-                // Initialize services
-                //var dataService = new DataService(context);
+                // Инициализируем сервис данных
+                var dataService = new DataService(context);
 
-                // Create and show main window
-                MainWindow = new MainWindow
-                {
-                    DataContext = new MainViewModel(dataService)
-                };
-                MainWindow.Show();
+                // Создаем и показываем главное окно
+                var mainWindow = new MainWindow();
+                mainWindow.DataContext = new MainViewModel(dataService);
+                mainWindow.Show();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                MessageBox.Show($"Failed to start application: {ex.Message}",
-                              "Startup Error",
+                MessageBox.Show($"Ошибка запуска приложения: {ex.Message}",
+                              "Ошибка",
                               MessageBoxButton.OK,
                               MessageBoxImage.Error);
                 Shutdown();

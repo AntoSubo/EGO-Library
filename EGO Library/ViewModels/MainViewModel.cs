@@ -2,6 +2,7 @@
 using EGO_Library.Services;
 using EGO_Library.Views.Controls;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 
 namespace EGO_Library.ViewModels
@@ -22,17 +23,15 @@ namespace EGO_Library.ViewModels
         public RelayCommand ShowGiftListCommand { get; }
         public RelayCommand ShowRecipesCommand { get; }
         public RelayCommand ShowAboutCommand { get; }
-        public RelayCommand LoadDataCommand { get; }
 
         public MainViewModel(DataService dataService)
         {
             _dataService = dataService;
 
-            // Команды
+            // Команды навигации
             ShowGiftListCommand = new RelayCommand(_ => ShowGiftList());
             ShowRecipesCommand = new RelayCommand(_ => ShowRecipes());
             ShowAboutCommand = new RelayCommand(_ => ShowAbout());
-            LoadDataCommand = new RelayCommand(_ => LoadData());
 
             // Загружаем данные и показываем список даров
             LoadData();
@@ -56,7 +55,7 @@ namespace EGO_Library.ViewModels
                     AddSampleData();
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 MessageBox.Show($"Ошибка загрузки данных: {ex.Message}");
             }
@@ -66,30 +65,11 @@ namespace EGO_Library.ViewModels
         {
             var sampleGifts = new List<EgoGift>
             {
-                new EgoGift
-                {
-                    Name = "Wealth",
-                    Tier = 4,
-                    Status = "Charge",
-                    Icon = "💰",
-                    Description = "Increases max Charge by 2"
-                },
-                new EgoGift
-                {
-                    Name = "Inferno",
-                    Tier = 3,
-                    Status = "Burn",
-                    Icon = "🔥",
-                    Description = "Applies Burn status each turn"
-                },
-                new EgoGift
-                {
-                    Name = "Fortitude",
-                    Tier = 2,
-                    Status = "Defense",
-                    Icon = "🛡️",
-                    Description = "Reduces incoming damage by 15%"
-                }
+                new EgoGift("Wealth", 4, "Charge", "💰", "Increases max Charge by 2"),
+                new EgoGift("Inferno", 3, "Burn", "🔥", "Applies Burn status each turn"),
+                new EgoGift("Fortitude", 2, "Defense", "🛡️", "Reduces incoming damage by 15%"),
+                new EgoGift("Precision", 3, "Poise", "🎯", "Increases critical hit chance"),
+                new EgoGift("Vitality", 1, "Health", "❤️", "Restores HP each turn")
             };
 
             foreach (var gift in sampleGifts)
@@ -97,27 +77,23 @@ namespace EGO_Library.ViewModels
                 _dataService.AddGift(gift);
             }
 
-            LoadData(); // Перезагружаем данные
+            // Перезагружаем данные
+            var updatedGifts = _dataService.GetAllGifts();
+            Gifts.Clear();
+            foreach (var gift in updatedGifts)
+            {
+                Gifts.Add(gift);
+            }
         }
 
         private void ShowGiftList()
         {
-            var giftListView = new GiftListView();
-            if (giftListView.DataContext is GiftListViewModel giftListVm)
-            {
-                giftListVm.Gifts = Gifts;
-            }
-            CurrentView = giftListView;
+            CurrentView = new GiftListView();
         }
 
         private void ShowRecipes()
         {
-            var recipeView = new RecipeView();
-            if (recipeView.DataContext is RecipeViewModel recipeVm)
-            {
-                // Загружаем рецепты если нужно
-            }
-            CurrentView = recipeView;
+            CurrentView = new RecipeView();
         }
 
         private void ShowAbout()

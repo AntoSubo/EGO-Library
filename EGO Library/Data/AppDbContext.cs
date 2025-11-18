@@ -12,5 +12,11 @@ namespace EGO_Library.Data
         {
             optionsBuilder.UseSqlite("Data Source=ego_library.db");
         }
+
+        // ДОБАВЬТЕ этот метод
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

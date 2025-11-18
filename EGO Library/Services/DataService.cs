@@ -4,41 +4,48 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EGO_Library.Services
 {
     public class DataService : IDisposable
     {
         private readonly AppDbContext _context;
-        private bool _disposed = false;    
+        private bool _disposed = false;
+
+        // Конструктор с контекстом БД
+        public DataService(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        // === СИНХРОННЫЕ МЕТОДЫ ДЛЯ ViewModel ===
 
         // Получить все дары
-        public async Task<List<EgoGift>> GetAllGiftsAsync()
+        public List<EgoGift> GetAllGifts()
         {
-            return await _context.EgoGifts
+            return _context.EgoGifts
                 .Include(g => g.Sources)
                 .OrderBy(g => g.Tier)
                 .ThenBy(g => g.Name)
-                .ToListAsync();
+                .ToList();
         }
 
         // Поиск по имени
-        public async Task<List<EgoGift>> SearchGiftsAsync(string searchText)
+        public List<EgoGift> SearchGifts(string searchText)
         {
             if (string.IsNullOrWhiteSpace(searchText))
-                return await GetAllGiftsAsync();
+                return GetAllGifts();
 
-            return await _context.EgoGifts
+            return _context.EgoGifts
                 .Include(g => g.Sources)
                 .Where(g => g.Name.Contains(searchText) ||
                            g.Description.Contains(searchText) ||
                            g.Status.Contains(searchText))
-                .ToListAsync();
+                .ToList();
         }
 
         // Фильтрация по Tier и Status
-        public async Task<List<EgoGift>> GetFilteredGiftsAsync(int? tier = null, string status = null)
+        public List<EgoGift> GetFilteredGifts(int? tier = null, string status = null)
         {
             var query = _context.EgoGifts.Include(g => g.Sources).AsQueryable();
 
@@ -48,46 +55,46 @@ namespace EGO_Library.Services
             if (!string.IsNullOrEmpty(status))
                 query = query.Where(g => g.Status == status);
 
-            return await query.OrderBy(g => g.Tier).ThenBy(g => g.Name).ToListAsync();
+            return query.OrderBy(g => g.Tier).ThenBy(g => g.Name).ToList();
         }
 
         // Получить дар по ID
-        public async Task<EgoGift> GetGiftByIdAsync(int id)
+        public EgoGift GetGiftById(int id)
         {
-            return await _context.EgoGifts
+            return _context.EgoGifts
                 .Include(g => g.Sources)
-                .FirstOrDefaultAsync(g => g.Id == id);
+                .FirstOrDefault(g => g.Id == id);
         }
 
         // Добавить новый дар
-        public async Task AddGiftAsync(EgoGift gift)
+        public void AddGift(EgoGift gift)
         {
-            await _context.EgoGifts.AddAsync(gift);
-            await _context.SaveChangesAsync();
+            _context.EgoGifts.Add(gift);
+            _context.SaveChanges();
         }
 
         // Обновить дар
-        public async Task UpdateGiftAsync(EgoGift gift)
+        public void UpdateGift(EgoGift gift)
         {
             _context.EgoGifts.Update(gift);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         // Удалить дар
-        public async Task DeleteGiftAsync(int id)
+        public void DeleteGift(int id)
         {
-            var gift = await GetGiftByIdAsync(id);
+            var gift = GetGiftById(id);
             if (gift != null)
             {
                 _context.EgoGifts.Remove(gift);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
         }
 
         // Проверить существует ли дар с таким именем
-        public async Task<bool> GiftExistsAsync(string name)
+        public bool GiftExists(string name)
         {
-            return await _context.EgoGifts.AnyAsync(g => g.Name == name);
+            return _context.EgoGifts.Any(g => g.Name == name);
         }
 
         public void Dispose()
