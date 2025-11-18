@@ -8,8 +8,8 @@ namespace EGO_Library.ViewModels
     public class GiftListViewModel : BaseViewModel
     {
         private ObservableCollection<EgoGift> _gifts;
-        private EgoGift _selectedGift;
-        private string _searchText;
+        private EgoGift? _selectedGift;
+        private string _searchText = string.Empty;
 
         public ObservableCollection<EgoGift> Gifts
         {
@@ -17,7 +17,7 @@ namespace EGO_Library.ViewModels
             set { _gifts = value; OnPropertyChanged(); }
         }
 
-        public EgoGift SelectedGift
+        public EgoGift? SelectedGift
         {
             get => _selectedGift;
             set { _selectedGift = value; OnPropertyChanged(); }
@@ -37,7 +37,7 @@ namespace EGO_Library.ViewModels
             ViewGiftDetailCommand = new RelayCommand(ExecuteViewGiftDetail);
         }
 
-        private void ExecuteViewGiftDetail(object obj)
+        private void ExecuteViewGiftDetail(object? obj)
         {
             // Этот метод будет работать когда выберем дар
             if (SelectedGift != null)

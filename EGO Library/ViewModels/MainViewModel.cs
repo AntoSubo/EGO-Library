@@ -10,15 +10,15 @@ namespace EGO_Library.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private readonly DataService _dataService;
-        private object _currentView;
+        private object? _currentView;
 
-        public object CurrentView
+        public object? CurrentView
         {
             get => _currentView;
             set { _currentView = value; OnPropertyChanged(); }
         }
 
-        public ObservableCollection<EgoGift> Gifts { get; set; } = new ObservableCollection<EgoGift>();
+        public ObservableCollection<EgoGift> Gifts { get; set; } = new();
 
         public RelayCommand ShowGiftListCommand { get; }
         public RelayCommand ShowRecipesCommand { get; }
@@ -65,11 +65,11 @@ namespace EGO_Library.ViewModels
         {
             var sampleGifts = new List<EgoGift>
             {
-                new EgoGift("Wealth", 4, "Charge", "💰", "Increases max Charge by 2"),
-                new EgoGift("Inferno", 3, "Burn", "🔥", "Applies Burn status each turn"),
-                new EgoGift("Fortitude", 2, "Defense", "🛡️", "Reduces incoming damage by 15%"),
-                new EgoGift("Precision", 3, "Poise", "🎯", "Increases critical hit chance"),
-                new EgoGift("Vitality", 1, "Health", "❤️", "Restores HP each turn")
+                new("Wealth", 4, "Charge", "💰", "Increases max Charge by 2"),
+                new("Inferno", 3, "Burn", "🔥", "Applies Burn status each turn"),
+                new("Fortitude", 2, "Defense", "🛡️", "Reduces incoming damage by 15%"),
+                new("Precision", 3, "Poise", "🎯", "Increases critical hit chance"),
+                new("Vitality", 1, "Health", "❤️", "Restores HP each turn")
             };
 
             foreach (var gift in sampleGifts)

@@ -5,12 +5,12 @@ namespace EGO_Library.ViewModels
 {
     public class GiftDetailViewModel
     {
-        public string Name { get; set; }
-        public string Status { get; set; }
-        public string Description { get; set; }
-        public string ImagePath { get; set; }
-        public ObservableCollection<string> Recipes { get; set; }
-        public ObservableCollection<string> Sources { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string ImagePath { get; set; } = string.Empty;
+        public ObservableCollection<string> Recipes { get; set; } = new();
+        public ObservableCollection<string> Sources { get; set; } = new();
 
         public GiftDetailViewModel(EgoGift gift)
         {

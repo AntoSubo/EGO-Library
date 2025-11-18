@@ -1,19 +1,18 @@
-﻿// Models/Source.cs
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace EGO_Library.Models
 {
     public class Sources : INotifyPropertyChanged
     {
-
-        private string _location;
-        private string _type;
+        private string _location = string.Empty;
+        private string _type = string.Empty;
         private int _floor;
         private double _dropRate;
 
         public int Id { get; set; }
-        public int EgoGiftId { get; set; } //внешник ключ
-        public string? Location
+        public int EgoGiftId { get; set; } //внешний ключ
+
+        public string Location
         {
             get => _location;
             set { _location = value; OnPropertyChanged(nameof(Location)); }
@@ -39,7 +38,7 @@ namespace EGO_Library.Models
 
         public Sources() { }
 
-        public Sources(string? location, string type, int floor = 0, double dropRate = 0)
+        public Sources(string location, string type, int floor = 0, double dropRate = 0)
         {
             Location = location;
             Type = type;
@@ -49,7 +48,7 @@ namespace EGO_Library.Models
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged(string propertyName = null)
+        protected virtual void OnPropertyChanged(string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

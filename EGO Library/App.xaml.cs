@@ -16,7 +16,10 @@ namespace EGO_Library
             {
                 // Создаем и инициализируем базу данных
                 using var context = new AppDbContext();
-                context.Database.EnsureCreated();
+
+                // Инициализируем данные
+                var initializer = new DataInitializer(context);
+                initializer.Initialize();
 
                 // Инициализируем сервис данных
                 var dataService = new DataService(context);

@@ -13,10 +13,20 @@ namespace EGO_Library.Data
             optionsBuilder.UseSqlite("Data Source=ego_library.db");
         }
 
-        // ДОБАВЬТЕ этот метод
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            // Конфигурация для EgoGift
+            modelBuilder.Entity<EgoGift>()
+                .HasKey(g => g.Id);
+
+            modelBuilder.Entity<EgoGift>()
+                .HasMany(g => g.Sources)
+                .WithOne()
+                .HasForeignKey(s => s.EgoGiftId);
+
+            // Конфигурация для Sources
+            modelBuilder.Entity<Sources>()
+                .HasKey(s => s.Id);
         }
     }
 }
