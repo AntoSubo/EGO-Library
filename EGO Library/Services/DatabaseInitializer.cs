@@ -3,173 +3,145 @@ using EGO_Library.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EGO_Library.Services
 {
-    public class DataInitializer
+    public class DatabaseInitializer
     {
-        private readonly AppDbContext _context;
-
-        public DataInitializer(AppDbContext context)
+        public static async Task InitializeAsync()
         {
-            _context = context;
-        }
-
-        public void Initialize()
-        {
-            // Создаем базу если не существует
-            _context.Database.EnsureCreated();
-
-            // Проверяем, есть ли уже данные
-            if (_context.EgoGifts.Any())
-                return;
-
-            Console.WriteLine("Начало заполнения базы данных...");
-
-            var gifts = GenerateEgoGifts();
-            _context.EgoGifts.AddRange(gifts);
-            _context.SaveChanges();
-
-            Console.WriteLine($"База данных заполнена! Добавлено {gifts.Count} записей.");
-        }
-
-        private static List<EgoGift> GenerateEgoGifts()
-        {
-            var gifts = new List<EgoGift>();
-            var random = new Random();
-
-            // Базовые данные для генерации
-            var statusEffects = new[]
+            try
             {
-                "Burn", "Bleed", "Charge", "Poise", "Rupture", "Sinking", "Tremor", "Fragment",
-                "Attack Power Up", "Defense Power Up", "Speed Up", "HP Recovery", "SP Recovery",
-                "Critical Rate Up", "Damage Reduction", "Counter", "Pierce", "Blunt", "Slash"
-            };
+                using var context = new AppDbContext();
 
-            var locations = new[]
-            {
-                "Mirror Dungeon", "Thread Spin", "Shop", "Event", "Boss Drop", "Fusion",
-                "Exchange", "Season Pass", "Achievement", "Limited Time"
-            };
+                // Создаем базу данных и таблицы, если их нет
+                await context.Database.EnsureCreatedAsync();
 
-            var icons = new[]
-            {
-                "💰", "🔥", "🛡️", "🎯", "❤️", "⚡", "🌪️", "💧", "🌑", "☀️", "⭐", "🎭",
-                "⚔️", "🏹", "🔮", "💎", "🎲", "📜", "🔑", "🏆"
-            };
-
-            var namePrefixes = new[]
-            {
-                "Abyssal", "Ancient", "Arcane", "Blazing", "Celestial", "Chaotic", "Crimson", "Cursed",
-                "Divine", "Eternal", "Frozen", "Golden", "Hallowed", "Infernal", "Lunar", "Mystic",
-                "Radiant", "Shadow", "Solar", "Thundering", "Void", "Wailing", "Whispering"
-            };
-
-            var nameSuffixes = new[]
-            {
-                "Ambition", "Anguish", "Ashes", "Blade", "Blood", "Boon", "Breath", "Chains",
-                "Claw", "Crown", "Desire", "Dream", "Ember", "Embrace", "End", "Flame",
-                "Gaze", "Heart", "Hope", "Memory", "Oath", "Pain", "Promise", "Regret",
-                "Scream", "Shadow", "Sigh", "Soul", "Tear", "Thorn", "Truth", "Will",
-                "Wisdom", "Wound", "Yearning"
-            };
-
-            // Генерируем 600+ EGO gifts
-            for (int i = 1; i <= 650; i++)
-            {
-                var name = $"{namePrefixes[random.Next(namePrefixes.Length)]} {nameSuffixes[random.Next(nameSuffixes.Length)]}";
-                var tier = GetWeightedTier(random);
-                var status = statusEffects[random.Next(statusEffects.Length)];
-                var icon = icons[random.Next(icons.Length)];
-
-                var gift = new EgoGift(name, tier, status, icon, GenerateDescription(name, tier, status, random))
+                // Проверяем, есть ли уже данные
+                if (await context.EgoGifts.AnyAsync())
                 {
-                    Sources = GenerateSources(locations, random, tier)
-                };
+                    Console.WriteLine("Database already contains data. Skipping initialization.");
+                    return;
+                }
 
-                gifts.Add(gift);
+                Console.WriteLine("Initializing database with sample data...");
+
+                // Создаем тестовые данные
+                var sampleGifts = CreateSampleGifts();
+
+                // Добавляем в контекст
+                await context.EgoGifts.AddRangeAsync(sampleGifts);
+
+                // Сохраняем в базу
+                await context.SaveChangesAsync();
+
+                Console.WriteLine("Database initialized successfully!");
             }
-
-            return gifts;
-        }
-
-        private static int GetWeightedTier(Random random)
-        {
-            // Веса для tier: 1-40%, 2-30%, 3-15%, 4-10%, 5-5%
-            var roll = random.Next(100);
-            return roll switch
+            catch (Exception ex)
             {
-                < 40 => 1,
-                < 70 => 2,
-                < 85 => 3,
-                < 95 => 4,
-                _ => 5
-            };
-        }
-
-        private static string GenerateDescription(string name, int tier, string status, Random random)
-        {
-            var descriptions = new[]
-            {
-                $"The {name} grants its wielder enhanced capabilities in combat.",
-                $"A manifestation of {name.ToLower()} that empowers the user.",
-                $"This EGO gift channels the essence of {name.ToLower()}.",
-                $"{name} embodies the concept of {status.ToLower()} in physical form.",
-                $"Wielders of {name} find themselves transformed by its power.",
-                $"An enigmatic artifact known as {name} with mysterious properties.",
-                $"{name} resonates with those who understand its true nature.",
-                $"The power of {name} can turn the tide of any battle."
-            };
-
-            var effects = new[]
-            {
-                $"Applies {status} status to enemies.",
-                $"Increases {status} potency by {tier * 10}%.",
-                $"Grants resistance to {status} effects.",
-                $"Converts damage to {status} type.",
-                $"Amplifies {status} related abilities.",
-                $"Creates {status} fields around the user.",
-                $"Stores {status} energy for powerful attacks."
-            };
-
-            return $"{descriptions[random.Next(descriptions.Length)]} {effects[random.Next(effects.Length)]}";
-        }
-
-        private static ObservableCollection<Sources> GenerateSources(string[] locations, Random random, int tier)
-        {
-            var sources = new ObservableCollection<Sources>();
-            var sourceCount = random.Next(1, 4); // 1-3 источника
-
-            for (int i = 0; i < sourceCount; i++)
-            {
-                var location = locations[random.Next(locations.Length)];
-                var floor = location == "Mirror Dungeon" ? random.Next(1, 6) : 0;
-                var dropRate = location == "Boss Drop" ? random.NextDouble() * 0.3 : 0;
-
-                sources.Add(new Sources(location, GetSourceType(location), floor, dropRate));
+                Console.WriteLine($"Error initializing database: {ex.Message}");
+                throw;
             }
-
-            return sources;
         }
 
-        private static string GetSourceType(string location)
+        private static List<EgoGift> CreateSampleGifts()
         {
-            return location switch
+            return new List<EgoGift>
             {
-                "Mirror Dungeon" => "Dungeon",
-                "Thread Spin" => "Crafting",
-                "Shop" => "Purchase",
-                "Event" => "Event",
-                "Boss Drop" => "Drop",
-                "Fusion" => "Crafting",
-                "Exchange" => "Exchange",
-                "Season Pass" => "Reward",
-                "Achievement" => "Achievement",
-                "Limited Time" => "Limited",
-                _ => "Other"
+                new EgoGift
+                {
+                    Name = "Wealth",
+                    Tier = 4,
+                    Status = "Charge",
+                    Icon = "💰",
+                    Description = "Increases max Charge by 2",
+                    Sources = new List<Sources> 
+                    {
+                        new Sources
+                        {
+                            Location = "Mirror Dungeon",
+                            Type = "Dungeon",
+                            Floor = 5,
+                            DropRate = 0.15
+                        },
+                        new Sources
+                        {
+                            Location = "Fusion",
+                            Type = "Crafting",
+                            DropRate = 0.05
+                        }
+                    },
+                    CreatedDate = DateTime.Now
+                },
+                new EgoGift
+                {
+                    Name = "Inferno",
+                    Tier = 3,
+                    Status = "Burn",
+                    Icon = "🔥",
+                    Description = "Applies Burn status each turn",
+                    Sources = new List<Sources> 
+                    {
+                        new Sources
+                        {
+                            Location = "Mirror Dungeon",
+                            Type = "Dungeon",
+                            Floor = 3,
+                            DropRate = 0.25
+                        },
+                        new Sources
+                        {
+                            Location = "Event: Fire Festival",
+                            Type = "Event",
+                            DropRate = 0.10
+                        }
+                    },
+                    CreatedDate = DateTime.Now
+                },
+                new EgoGift
+                {
+                    Name = "Fortitude",
+                    Tier = 2,
+                    Status = "Defense",
+                    Icon = "🛡️",
+                    Description = "Reduces incoming damage by 15%",
+                    Sources = new List<Sources> 
+                    {
+                        new Sources
+                        {
+                            Location = "Mirror Dungeon",
+                            Type = "Dungeon",
+                            Floor = 2,
+                            DropRate = 0.30
+                        }
+                    },
+                    CreatedDate = DateTime.Now
+                }
             };
+        }
+
+        // Метод для проверки состояния базы данных
+        public static async Task CheckDatabaseStatusAsync()
+        {
+            try
+            {
+                using var context = new AppDbContext();
+                var giftCount = await context.EgoGifts.CountAsync();
+                var sourcesCount = await context.Sources.CountAsync(); 
+
+                Console.WriteLine($"Database status: {giftCount} gifts, {sourcesCount} sources");
+
+                if (giftCount == 0)
+                {
+                    Console.WriteLine("Database is empty. Run InitializeAsync to populate.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking database status: {ex.Message}");
+            }
         }
     }
 }

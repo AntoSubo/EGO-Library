@@ -1,17 +1,18 @@
 ﻿using EGO_Library.Services;
+using System.Windows.Input;
 
 namespace EGO_Library.ViewModels
 {
     public class AboutViewModel : BaseViewModel
     {
-        public RelayCommand GoBackCommand { get; }
+        private readonly INavigationService _navigationService;
 
-        //public AboutViewModel(NavigationService navigation)
-        //{
-        //    GoBackCommand = new RelayCommand(_ =>
-        //    {
-        //        //navigation.Navigate(new GiftListViewModel(navigation));
-        //    });
-        //}
+        public ICommand GoBackCommand { get; }
+
+        public AboutViewModel(INavigationService navigationService)
+        {
+            _navigationService = navigationService;
+            GoBackCommand = new RelayCommand(_ => _navigationService.GoBack());
+        }
     }
 }

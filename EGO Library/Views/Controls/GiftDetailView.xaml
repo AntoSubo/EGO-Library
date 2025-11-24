@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="EGO_Library.Views.Controls.GiftDetailView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="Transparent">
+             >
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -16,8 +16,13 @@
                        DockPanel.Dock="Left"
                        VerticalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                <Button Content="Help" Width="60" Margin="0,0,5,0" Click="HelpButton_Click"/>
-                <Button Content="Back" Width="60" Click="BackButton_Click"/>
+                <Button Content="Help" 
+                        Width="60" 
+                        Margin="0,0,5,0" 
+                        Command="{Binding HelpCommand}"/>
+                <Button Content="Back" 
+                        Width="60" 
+                        Command="{Binding GoBackCommand}"/>
             </StackPanel>
         </DockPanel>
 
@@ -27,35 +32,53 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Background="#FFF" BorderBrush="#CCC" BorderThickness="1"
-                    CornerRadius="8" Padding="5" Margin="0,0,10,0">
-                <Image Source="{Binding ImagePath}" Stretch="Uniform"/>
+            <Border Background="#FFF" 
+                    BorderBrush="#CCC" 
+                    BorderThickness="1"
+                    CornerRadius="8" 
+                    Padding="5" 
+                    Margin="0,0,10,0">
+                <Image Source="{Binding Gift.ImagePath}" 
+                       Stretch="Uniform"/>
             </Border>
 
             <StackPanel Grid.Column="1">
-                <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Margin="0,0,0,5"/>
-                <TextBlock Text="Status:" FontWeight="SemiBold"/>
-                <TextBlock Text="{Binding Status}" Margin="0,0,0,10"/>
+                <TextBlock Text="{Binding Gift.Name}" 
+                           FontSize="20" 
+                           FontWeight="Bold" 
+                           Margin="0,0,0,5"/>
+                <TextBlock Text="Status:" 
+                           FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding Gift.Status}" 
+                           Margin="0,0,0,10"/>
 
-                <TextBlock Text="Description:" FontWeight="SemiBold"/>
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                <TextBlock Text="Description:" 
+                           FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding Gift.Description}" 
+                           TextWrapping="Wrap" 
+                           Margin="0,0,0,10"/>
 
-                <!-- Кликабельные Recipes -->
-                <TextBlock Text="Recipes" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                <ItemsControl ItemsSource="{Binding Recipes}">
+                <TextBlock Text="Recipes" 
+                           FontWeight="SemiBold" 
+                           Margin="0,0,0,5"/>
+                <ItemsControl ItemsSource="{Binding Gift.Recipes}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="• {Binding}" Margin="10,0,0,2" Cursor="Hand"
-                                       MouseDown="RecipeItem_MouseDown"/>
+                            <TextBlock Text="{Binding}" 
+                                       Margin="10,0,0,2" 
+                                       Cursor="Hand"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <TextBlock Text="Sources" FontWeight="SemiBold" Margin="10,10,0,5"/>
-                <ItemsControl ItemsSource="{Binding Sources}">
+                <TextBlock Text="Sources" 
+                           FontWeight="SemiBold" 
+                           Margin="10,10,0,5"/>
+                <ItemsControl ItemsSource="{Binding Gift.Sources}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="• {Binding}" Margin="10,0,0,2"/>
+                            <TextBlock Text="{Binding}" 
+                                       Margin="10,0,0,2"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

@@ -2,60 +2,23 @@
 
 namespace EGO_Library.Models
 {
-    public class Sources : INotifyPropertyChanged
+    public class Sources 
     {
-        private string _location = string.Empty;
-        private string _type = string.Empty;
-        private int _floor;
-        private double _dropRate;
-
         public int Id { get; set; }
-        public int EgoGiftId { get; set; } //внешний ключ
+        public string Location { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public int Floor { get; set; }
+        public double DropRate { get; set; }
 
-        public string Location
-        {
-            get => _location;
-            set { _location = value; OnPropertyChanged(nameof(Location)); }
-        }
+        // Внешний ключ
+        public int EgoGiftId { get; set; }
 
-        public string Type
-        {
-            get => _type;
-            set { _type = value; OnPropertyChanged(nameof(Type)); }
-        }
-
-        public int Floor
-        {
-            get => _floor;
-            set { _floor = value; OnPropertyChanged(nameof(Floor)); }
-        }
-
-        public double DropRate
-        {
-            get => _dropRate;
-            set { _dropRate = value; OnPropertyChanged(nameof(DropRate)); }
-        }
-
-        public Sources() { }
-
-        public Sources(string location, string type, int floor = 0, double dropRate = 0)
-        {
-            Location = location;
-            Type = type;
-            Floor = floor;
-            DropRate = dropRate;
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        // Навигационное свойство
+        public virtual EgoGift EgoGift { get; set; }
 
         public override string ToString()
         {
-            return $"{Location} (Floor {Floor})";
+            return $"{Location} {(Floor > 0 ? $"(Floor {Floor})" : "")}";
         }
     }
 }

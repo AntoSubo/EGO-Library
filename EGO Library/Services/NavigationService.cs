@@ -1,43 +1,51 @@
-﻿//using EGO_Library.Views;
-//using System.Windows;
+﻿using EGO_Library.Models;
+using EGO_Library.ViewModels;
+using EGO_Library.Views.Controls;
 
-//namespace EGO_Library.Services
-//{
-//    public class NavigationService
-//    {
-//        private static MainWindow MainWindow => Application.Current.MainWindow as MainWindow;
+namespace EGO_Library.Services
+{
+    public class NavigationService : INavigationService
+    {
+        private readonly MainViewModel _mainViewModel;
+        private readonly DataService _dataService;
 
-//        public static RelayCommand NavigateToGiftListCommand { get; } = new RelayCommand(
-//            _ => MainWindow?.NavigateToGiftList());
+        public NavigationService(MainViewModel mainViewModel, DataService dataService)
+        {
+            _mainViewModel = mainViewModel;
+            _dataService = dataService;
+        }
 
-//        public static RelayCommand NavigateToRecipesCommand { get; } = new RelayCommand(
-//            _ => MainWindow?.NavigateToRecipes());
+        public void NavigateToGiftList()
+        {
+            var giftListView = new GiftListView();
+            giftListView.DataContext = new GiftListViewModel(_dataService, this);
+            _mainViewModel.CurrentView = giftListView;
+        }
 
-//        public static RelayCommand NavigateToAboutCommand { get; } = new RelayCommand(
-//            _ => MainWindow?.NavigateToAbout());
+        public void NavigateToRecipes()
+        {
+            var recipeView = new RecipeView();
+            recipeView.DataContext = new RecipeViewModel(this);
+            _mainViewModel.CurrentView = recipeView;
+        }
 
-//        public static RelayCommand NavigateToGiftDetailCommand { get; } = new RelayCommand(
-//            _ => MainWindow?.NavigateToGiftDetail());
+        public void NavigateToAbout()
+        {
+            var aboutView = new AboutView();
+            aboutView.DataContext = new AboutViewModel(this);
+            _mainViewModel.CurrentView = aboutView;
+        }
 
-//        // Методы для прямой навигации
-//        public static void NavigateToGiftList()
-//        {
-//            MainWindow?.NavigateToGiftList();
-//        }
+        public void NavigateToGiftDetail(EgoGift gift)
+        {
+            var giftDetailView = new GiftDetailView();
+            giftDetailView.DataContext = new GiftDetailViewModel(gift, this);
+            _mainViewModel.CurrentView = giftDetailView;
+        }
 
-//        public static void NavigateToRecipes()
-//        {
-//            MainWindow?.NavigateToRecipes();
-//        }
-
-//        public static void NavigateToAbout()
-//        {
-//            MainWindow?.NavigateToAbout();
-//        }
-
-//        //public static void NavigateToGiftDetail(object gift = null)
-//        //{
-//        //    MainWindow?.NavigateToGiftDetail(gift);
-//        //}
-//    }
-//}
+        public void GoBack()
+        {
+            NavigateToGiftList(); // Возврат к списку даров
+        }
+    }
+}
