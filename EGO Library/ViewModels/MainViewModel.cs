@@ -18,7 +18,6 @@ namespace EGO_Library.ViewModels
 
         public ObservableCollection<EgoGift> Gifts { get; set; } = new ObservableCollection<EgoGift>();
 
-        // Команды навигации для главного меню (если будет)
         public RelayCommand NavigateToGiftListCommand { get; }
         public RelayCommand NavigateToRecipesCommand { get; }
         public RelayCommand NavigateToAboutCommand { get; }
