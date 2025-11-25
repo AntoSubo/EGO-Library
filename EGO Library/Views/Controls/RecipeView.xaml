@@ -1,7 +1,10 @@
 ﻿<UserControl x:Class="EGO_Library.Views.Controls.RecipeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             >
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -23,11 +26,56 @@
             </StackPanel>
         </DockPanel>
 
+        <!-- Панель фильтров -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     Width="200" 
+                     Margin="0,0,10,0"
+                     Padding="5"
+                     ToolTip="Search recipes..."/>
+            <ComboBox ItemsSource="{Binding AvailableDifficulties}" 
+                     SelectedItem="{Binding SelectedDifficulty}"
+                     Width="100" 
+                     Margin="0,0,10,0"/>
+            <Button Content="Clear Filters" 
+                    Command="{Binding ClearFiltersCommand}"
+                    Width="100" 
+                    Height="25"/>
+        </StackPanel>
+
         <!-- Контент рецептов -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <TextBlock Text="Recipes page content" 
-                       FontSize="16"/>
-            <!-- Здесь будет список рецептов -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,40,0,0">
+            <ItemsControl ItemsSource="{Binding Recipes}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="#CCC" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Location}" FontStyle="Italic" Foreground="Gray" Margin="0,5,0,0"/>
+                                    <TextBlock Text="Required Gifts:" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                                    <ItemsControl ItemsSource="{Binding RequiredGifts}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}" Margin="10,0,0,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                    <TextBlock Text="{Binding Difficulty}" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding ResultGift.Name}" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
     </Grid>
 </UserControl>

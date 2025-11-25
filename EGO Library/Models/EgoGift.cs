@@ -22,6 +22,12 @@ namespace EGO_Library.Models
         public string Description { get; set; } = string.Empty;
 
         public virtual ICollection<Sources> Sources { get; set; } = new List<Sources>();
+        
+        // Связь с рецептами где этот дар является результатом
+        public virtual ICollection<Recipe> ResultRecipes { get; set; } = new List<Recipe>();
+        
+        // Связь с рецептами где этот дар требуется
+        public virtual ICollection<Recipe> RequiredInRecipes { get; set; } = new List<Recipe>();
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }

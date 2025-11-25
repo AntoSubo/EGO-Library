@@ -27,12 +27,10 @@ namespace EGO_Library.ViewModels
             _dataService = dataService;
             _navigationService = new NavigationService(this, dataService);
 
-            // Инициализация команд
             NavigateToGiftListCommand = new RelayCommand(_ => _navigationService.NavigateToGiftList());
             NavigateToRecipesCommand = new RelayCommand(_ => _navigationService.NavigateToRecipes());
             NavigateToAboutCommand = new RelayCommand(_ => _navigationService.NavigateToAbout());
 
-            // Стартовая страница
             _navigationService.NavigateToGiftList();
         }
     }

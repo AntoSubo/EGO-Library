@@ -25,7 +25,7 @@ namespace EGO_Library.Services
         public void NavigateToRecipes()
         {
             var recipeView = new RecipeView();
-            recipeView.DataContext = new RecipeViewModel(this);
+            recipeView.DataContext = new RecipeViewModel(this, _dataService);
             _mainViewModel.CurrentView = recipeView;
         }
 
@@ -39,13 +39,13 @@ namespace EGO_Library.Services
         public void NavigateToGiftDetail(EgoGift gift)
         {
             var giftDetailView = new GiftDetailView();
-            giftDetailView.DataContext = new GiftDetailViewModel(gift, this);
+            giftDetailView.DataContext = new GiftDetailViewModel(gift, this, _dataService);
             _mainViewModel.CurrentView = giftDetailView;
         }
 
         public void GoBack()
         {
-            NavigateToGiftList(); // Возврат к списку даров
+            NavigateToGiftList();
         }
     }
 }

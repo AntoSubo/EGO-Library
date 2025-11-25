@@ -1,5 +1,4 @@
-﻿// Data/AppDbContext.cs
-using EGO_Library.Models;
+﻿using EGO_Library.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EGO_Library.Data
@@ -7,7 +6,8 @@ namespace EGO_Library.Data
     public class AppDbContext : DbContext
     {
         public DbSet<EgoGift> EgoGifts { get; set; }
-        public DbSet<Sources> Sources { get; set; } 
+        public DbSet<Sources> Sources { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -33,11 +33,31 @@ namespace EGO_Library.Data
                 entity.Property(s => s.Location).IsRequired().HasMaxLength(200);
                 entity.Property(s => s.Type).HasMaxLength(50);
 
-                // Связь с EgoGift
                 entity.HasOne(s => s.EgoGift)
                       .WithMany(g => g.Sources)
                       .HasForeignKey(s => s.EgoGiftId)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Конфигурация Recipe
+            modelBuilder.Entity<Recipe>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+                entity.Property(r => r.Name).HasMaxLength(100);
+                entity.Property(r => r.Description).HasMaxLength(500);
+                entity.Property(r => r.Location).HasMaxLength(100);
+                entity.Property(r => r.Difficulty).HasMaxLength(20);
+
+                // Связь с результирующим даром
+                entity.HasOne(r => r.ResultGift)
+                      .WithMany(g => g.ResultRecipes)
+                      .HasForeignKey(r => r.ResultGiftId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Связь многие-ко-многим с требуемыми дарами
+                entity.HasMany(r => r.RequiredGifts)
+                      .WithMany(g => g.RequiredInRecipes)
+                      .UsingEntity(j => j.ToTable("RecipeRequiredGifts"));
             });
         }
     }

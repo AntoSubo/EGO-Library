@@ -15,6 +15,7 @@ namespace EGO_Library.ViewModels
         private ObservableCollection<EgoGift> _gifts;
         private string _searchText;
         private int? _selectedTier;
+        private string _selectedStatus = "All";
 
         public ObservableCollection<EgoGift> Gifts
         {
@@ -34,13 +35,21 @@ namespace EGO_Library.ViewModels
             set { _selectedTier = value; OnPropertyChanged(); _ = LoadGiftsAsync(); }
         }
 
+        public string SelectedStatus
+        {
+            get => _selectedStatus;
+            set { _selectedStatus = value; OnPropertyChanged(); _ = LoadGiftsAsync(); }
+        }
+
         public List<int> AvailableTiers { get; private set; } = new List<int>();
+        public List<string> AvailableStatuses { get; private set; } = new List<string> { "All" };
 
         // Команды
         public ICommand ClearFiltersCommand { get; }
         public ICommand NavigateToAboutCommand { get; }
         public ICommand ShowHelpCommand { get; }
-        public ICommand SelectGiftCommand { get; } // Новая команда для выбора дара
+        public ICommand SelectGiftCommand { get; }
+        public ICommand NavigateToRecipesCommand { get; }
 
         public GiftListViewModel(DataService dataService, INavigationService navigationService)
         {
@@ -50,7 +59,8 @@ namespace EGO_Library.ViewModels
             ClearFiltersCommand = new RelayCommand(_ => ClearFilters());
             NavigateToAboutCommand = new RelayCommand(_ => _navigationService.NavigateToAbout());
             ShowHelpCommand = new RelayCommand(_ => ShowHelp());
-            SelectGiftCommand = new RelayCommand(SelectGift); // Инициализация команды выбора
+            SelectGiftCommand = new RelayCommand(SelectGift);
+            NavigateToRecipesCommand = new RelayCommand(_ => _navigationService.NavigateToRecipes());
 
             _ = InitializeAsync();
         }
@@ -64,12 +74,16 @@ namespace EGO_Library.ViewModels
         private async Task LoadAvailableFiltersAsync()
         {
             AvailableTiers = await _dataService.GetAvailableTiersAsync();
+            var statuses = await _dataService.GetAvailableStatusesAsync();
+            AvailableStatuses.AddRange(statuses);
             OnPropertyChanged(nameof(AvailableTiers));
+            OnPropertyChanged(nameof(AvailableStatuses));
         }
 
         private async Task LoadGiftsAsync()
         {
-            var gifts = await _dataService.GetGiftsAsync(SearchText, SelectedTier, null);
+            var gifts = await _dataService.GetGiftsAsync(SearchText, SelectedTier,
+                SelectedStatus == "All" ? null : SelectedStatus);
             Gifts = new ObservableCollection<EgoGift>(gifts);
         }
 
@@ -77,14 +91,17 @@ namespace EGO_Library.ViewModels
         {
             SearchText = string.Empty;
             SelectedTier = null;
+            SelectedStatus = "All";
         }
 
-        private void ShowHelp()
+        private static void ShowHelp()
         {
-            System.Windows.MessageBox.Show("Для просмотра деталей дара просто кликните на него в списке.", "Помощь");
+            System.Windows.MessageBox.Show(
+                "Для просмотра деталей дара просто кликните на него в списке.\n\n" +
+                "Фильтры:\n- Поиск: по названию, описанию или статусу\n- Уровень: фильтр по Tier\n- Статус: фильтр по эффекту",
+                "Помощь");
         }
 
-        // Метод для выбора дара
         private void SelectGift(object parameter)
         {
             if (parameter is EgoGift gift)

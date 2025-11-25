@@ -2,14 +2,18 @@
 using EGO_Library.ViewModels;
 using EGO_Library.Views;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace EGO_Library
 {
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            // Инициализируем базу данных
+            await DatabaseInitializer.InitializeAsync();
 
             // Создаем сервисы
             var dataService = new DataService();
