@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EGO_Library.Services
@@ -16,37 +18,65 @@ namespace EGO_Library.Services
             {
                 using var context = new AppDbContext();
 
-                // Создаем базу данных и таблицы, если их нет
+                // УДАЛЯЕМ И ПЕРЕСОЗДАЕМ БАЗУ ДАННЫХ, ЧТОБЫ ОБНОВИТЬ СХЕМУ
+                await context.Database.EnsureDeletedAsync();
                 await context.Database.EnsureCreatedAsync();
 
-                // Проверяем, есть ли уже данные
-                if (await context.EgoGifts.AnyAsync())
+                Console.WriteLine("Database schema created successfully!");
+
+                // Проверяем, есть ли уже пользователи
+                if (!await context.Users.AnyAsync())
                 {
-                    Console.WriteLine("Database already contains data. Skipping initialization.");
-                    return;
+                    Console.WriteLine("Creating default admin user...");
+
+                    // Создаем тестового пользователя
+                    var adminUser = new User
+                    {
+                        Username = "admin",
+                        PasswordHash = HashPassword("password123"),
+                        Email = "admin@egolibrary.com",
+                        CreatedDate = DateTime.Now,
+                        LastLogin = DateTime.Now
+                    };
+
+                    await context.Users.AddAsync(adminUser);
+                    await context.SaveChangesAsync();
+                    Console.WriteLine("Default admin user created!");
                 }
 
-                Console.WriteLine("Initializing database with sample data...");
+                // Проверяем, есть ли уже дары
+                if (!await context.EgoGifts.AnyAsync())
+                {
+                    Console.WriteLine("Initializing database with sample data...");
 
-                // Создаем тестовые данные
-                var sampleGifts = CreateSampleGifts();
+                    // Создаем тестовые данные
+                    var sampleGifts = CreateSampleGifts();
+                    await context.EgoGifts.AddRangeAsync(sampleGifts);
+                    await context.SaveChangesAsync();
 
-                // Добавляем в контекст
-                await context.EgoGifts.AddRangeAsync(sampleGifts);
+                    // Создаем рецепты
+                    await CreateRecipesAsync(context);
 
-                // Сохраняем в базу
-                await context.SaveChangesAsync();
-
-                // Создаем рецепты
-                await CreateRecipesAsync(context);
+                    Console.WriteLine("Sample data created successfully!");
+                }
 
                 Console.WriteLine("Database initialized successfully!");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error initializing database: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 throw;
             }
+        }
+
+        // Метод для хеширования пароля
+        private static string HashPassword(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
 
         private static List<EgoGift> CreateSampleGifts()

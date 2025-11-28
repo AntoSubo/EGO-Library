@@ -8,13 +8,16 @@ namespace EGO_Library.Services
     {
         private readonly MainViewModel _mainViewModel;
         private readonly DataService _dataService;
+        private readonly IAuthService _authService;
 
-        public NavigationService(MainViewModel mainViewModel, DataService dataService)
+        public NavigationService(MainViewModel mainViewModel, IAuthService authService, DataService dataService)
         {
             _mainViewModel = mainViewModel;
+            _authService = authService;
             _dataService = dataService;
         }
 
+        // Основная навигация
         public void NavigateToGiftList()
         {
             var giftListView = new GiftListView();
@@ -43,9 +46,27 @@ namespace EGO_Library.Services
             _mainViewModel.CurrentView = giftDetailView;
         }
 
+        // НОВЫЕ МЕТОДЫ ДЛЯ АВТОРИЗАЦИИ
+        public void NavigateToLogin()
+        {
+            _mainViewModel.ShowLoginView();
+        }
+
+        public void NavigateToRegister()
+        {
+            _mainViewModel.ShowRegisterView();
+        }
+
         public void GoBack()
         {
-            NavigateToGiftList();
+            if (_authService.IsAuthenticated)
+            {
+                NavigateToGiftList();
+            }
+            else
+            {
+                NavigateToLogin();
+            }
         }
     }
 }

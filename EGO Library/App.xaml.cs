@@ -16,10 +16,11 @@ namespace EGO_Library
             await DatabaseInitializer.InitializeAsync();
 
             // Создаем сервисы
+            var authService = new AuthService();
             var dataService = new DataService();
 
             // Создаем MainViewModel
-            var mainViewModel = new MainViewModel(dataService);
+            var mainViewModel = new MainViewModel(authService, dataService);
 
             // Создаем и показываем главное окно
             MainWindow = new MainWindow { DataContext = mainViewModel };

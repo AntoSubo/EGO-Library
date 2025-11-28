@@ -8,6 +8,7 @@ namespace EGO_Library.Data
         public DbSet<EgoGift> EgoGifts { get; set; }
         public DbSet<Sources> Sources { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<User> Users { get; set; } 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -58,6 +59,16 @@ namespace EGO_Library.Data
                 entity.HasMany(r => r.RequiredGifts)
                       .WithMany(g => g.RequiredInRecipes)
                       .UsingEntity(j => j.ToTable("RecipeRequiredGifts"));
+            });
+
+            // ДОБАВИТЬ КОНФИГУРАЦИЮ ДЛЯ USER
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.Id);
+                entity.Property(u => u.Username).IsRequired().HasMaxLength(50);
+                entity.Property(u => u.PasswordHash).IsRequired().HasMaxLength(255);
+                entity.Property(u => u.Email).HasMaxLength(100);
+                entity.HasIndex(u => u.Username).IsUnique(); // Уникальный логин
             });
         }
     }

@@ -1,11 +1,12 @@
-﻿using EGO_Library.Models;
-using EGO_Library.Services;
-using System.Collections.ObjectModel;
+﻿using EGO_Library.Services;
+using EGO_Library.Views.Controls;
+using System.Windows.Input;
 
 namespace EGO_Library.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
+        private readonly IAuthService _authService;
         private readonly DataService _dataService;
         private readonly INavigationService _navigationService;
         private object _currentView;
@@ -13,25 +14,69 @@ namespace EGO_Library.ViewModels
         public object CurrentView
         {
             get => _currentView;
-            set { _currentView = value; OnPropertyChanged(); }
+            set => SetProperty(ref _currentView, value);
         }
 
-        public ObservableCollection<EgoGift> Gifts { get; set; } = new ObservableCollection<EgoGift>();
+        public bool IsAuthenticated => _authService?.IsAuthenticated ?? false;
 
-        public RelayCommand NavigateToGiftListCommand { get; }
-        public RelayCommand NavigateToRecipesCommand { get; }
-        public RelayCommand NavigateToAboutCommand { get; }
+        public ICommand NavigateToGiftListCommand { get; }
+        public ICommand NavigateToRecipesCommand { get; }
+        public ICommand NavigateToAboutCommand { get; }
+        public ICommand LogoutCommand { get; }
 
-        public MainViewModel(DataService dataService)
+        public MainViewModel(IAuthService authService, DataService dataService)
         {
+            _authService = authService;
             _dataService = dataService;
-            _navigationService = new NavigationService(this, dataService);
+
+            // ВАЖНО: создаем NavigationService после инициализации полей
+            _navigationService = new NavigationService(this, _authService, _dataService);
+
+            // Подписываемся на изменения авторизации
+            _authService.AuthenticationChanged += OnAuthenticationChanged;
 
             NavigateToGiftListCommand = new RelayCommand(_ => _navigationService.NavigateToGiftList());
             NavigateToRecipesCommand = new RelayCommand(_ => _navigationService.NavigateToRecipes());
             NavigateToAboutCommand = new RelayCommand(_ => _navigationService.NavigateToAbout());
+            LogoutCommand = new RelayCommand(_ => _authService.Logout());
 
-            _navigationService.NavigateToGiftList();
+            // ВАЖНО: проверяем авторизацию и показываем соответствующее view
+            if (_authService.IsAuthenticated)
+            {
+                _navigationService.NavigateToGiftList();
+            }
+            else
+            {
+                ShowLoginView(); // ПОКАЗЫВАЕМ ФОРМУ ВХОДА ПРИ ЗАПУСКЕ
+            }
+        }
+
+        private void OnAuthenticationChanged(object sender, System.EventArgs e)
+        {
+            OnPropertyChanged(nameof(IsAuthenticated));
+
+            if (_authService.IsAuthenticated)
+            {
+                _navigationService.NavigateToGiftList();
+            }
+            else
+            {
+                ShowLoginView();
+            }
+        }
+
+        public void ShowLoginView()
+        {
+            var loginView = new LoginView();
+            loginView.DataContext = new LoginViewModel(_authService, _navigationService);
+            CurrentView = loginView;
+        }
+
+        public void ShowRegisterView()
+        {
+            var registerView = new RegisterView();
+            registerView.DataContext = new RegisterViewModel(_authService, _navigationService);
+            CurrentView = registerView;
         }
     }
 }
