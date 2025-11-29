@@ -1,4 +1,5 @@
 ﻿using EGO_Library.Services;
+using System;
 using System.Windows.Input;
 
 namespace EGO_Library.ViewModels
@@ -11,6 +12,9 @@ namespace EGO_Library.ViewModels
         private string _username = "admin";
         private string _password;
         private string _errorMessage;
+
+        // Событие для очистки пароля в View
+        public event EventHandler RequestClearPassword;
 
         public string Username
         {
@@ -51,22 +55,15 @@ namespace EGO_Library.ViewModels
 
         private void Login()
         {
-            try
-            {
-                ErrorMessage = string.Empty;
+            ErrorMessage = string.Empty;
 
-                if (_authService.Login(Username, Password))
-                {
-                    ErrorMessage = "Успешный вход!";
-                }
-                else
-                {
-                    ErrorMessage = "Неверное имя пользователя или пароль";
-                }
-            }
-            catch (Exception ex)
+            if (_authService.Login(Username, Password))
             {
-                ErrorMessage = $"Ошибка: {ex.Message}";
+                ErrorMessage = "Успешный вход!";
+            }
+            else
+            {
+                ErrorMessage = "Неверное имя пользователя или пароль";
             }
         }
 
@@ -75,6 +72,9 @@ namespace EGO_Library.ViewModels
             Username = "admin";
             Password = string.Empty;
             ErrorMessage = string.Empty;
+
+            // Вызываем событие для очистки PasswordBox в View
+            RequestClearPassword?.Invoke(this, EventArgs.Empty);
         }
     }
 }

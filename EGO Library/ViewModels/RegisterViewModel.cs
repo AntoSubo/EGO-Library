@@ -1,4 +1,5 @@
 ﻿using EGO_Library.Services;
+using System;
 using System.Windows.Input;
 
 namespace EGO_Library.ViewModels
@@ -14,6 +15,9 @@ namespace EGO_Library.ViewModels
         private string _confirmPassword;
         private string _errorMessage;
         private string _successMessage;
+
+        // Событие для запроса очистки паролей в View
+        public event EventHandler RequestClearPasswords;
 
         public string Username
         {
@@ -75,36 +79,29 @@ namespace EGO_Library.ViewModels
 
         private void Register()
         {
-            try
+            ErrorMessage = string.Empty;
+            SuccessMessage = string.Empty;
+
+            // Валидация
+            if (Password != ConfirmPassword)
             {
-                ErrorMessage = string.Empty;
-                SuccessMessage = string.Empty;
-
-                // Валидация
-                if (Password != ConfirmPassword)
-                {
-                    ErrorMessage = "Пароли не совпадают";
-                    return;
-                }
-
-                if (Password.Length < 6)
-                {
-                    ErrorMessage = "Пароль должен содержать минимум 6 символов";
-                    return;
-                }
-
-                if (_authService.Register(Username, Password, Email))
-                {
-                    SuccessMessage = "Регистрация успешна! Вы автоматически вошли в систему.";
-                }
-                else
-                {
-                    ErrorMessage = "Ошибка при регистрации. Попробуйте еще раз.";
-                }
+                ErrorMessage = "Пароли не совпадают";
+                return;
             }
-            catch (Exception ex)
+
+            if (Password.Length < 6)
             {
-                ErrorMessage = $"Ошибка: {ex.Message}";
+                ErrorMessage = "Пароль должен содержать минимум 6 символов";
+                return;
+            }
+
+            if (_authService.Register(Username, Password, Email))
+            {
+                SuccessMessage = "Регистрация успешна! Вы автоматически вошли в систему.";
+            }
+            else
+            {
+                ErrorMessage = "Ошибка при регистрации. Попробуйте еще раз.";
             }
         }
 
@@ -116,6 +113,14 @@ namespace EGO_Library.ViewModels
             ConfirmPassword = string.Empty;
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
+
+            // Вызываем событие для очистки PasswordBox в View
+            RequestClearPasswords?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void NavigateToLogin()
+        {
+            _navigationService.NavigateToLogin();
         }
     }
 }
