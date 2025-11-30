@@ -17,7 +17,6 @@ namespace EGO_Library.Models
 
         [MaxLength(100)]
         public string Email { get; set; } = string.Empty;
-
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime LastLogin { get; set; } = DateTime.Now;
     }

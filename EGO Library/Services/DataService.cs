@@ -12,27 +12,39 @@ namespace EGO_Library.Services
         // Получить все дары с фильтрацией
         public async Task<List<EgoGift>> GetGiftsAsync(string searchText = null, int? tier = null, string status = null)
         {
-            using var context = new AppDbContext();
-            var query = context.EgoGifts.Include(g => g.Sources).AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(searchText))
+            try
             {
-                query = query.Where(g => g.Name.Contains(searchText) ||
-                                       g.Description.Contains(searchText) ||
-                                       g.Status.Contains(searchText));
-            }
+                Console.WriteLine("DataService: Loading gifts from database...");
 
-            if (tier.HasValue)
+                using var context = new AppDbContext();
+                var query = context.EgoGifts.Include(g => g.Sources).AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(g => g.Name.Contains(searchText) ||
+                                           g.Description.Contains(searchText) ||
+                                           g.Status.Contains(searchText));
+                }
+
+                if (tier.HasValue)
+                {
+                    query = query.Where(g => g.Tier == tier.Value);
+                }
+
+                if (!string.IsNullOrWhiteSpace(status) && status != "All")
+                {
+                    query = query.Where(g => g.Status == status);
+                }
+
+                var result = await query.OrderBy(g => g.Tier).ThenBy(g => g.Name).ToListAsync();
+                Console.WriteLine($"DataService: Successfully loaded {result.Count} gifts");
+                return result;
+            }
+            catch (Exception ex)
             {
-                query = query.Where(g => g.Tier == tier.Value);
+                Console.WriteLine($"DataService ERROR: {ex.Message}");
+                return new List<EgoGift>();
             }
-
-            if (!string.IsNullOrWhiteSpace(status) && status != "All")
-            {
-                query = query.Where(g => g.Status == status);
-            }
-
-            return await query.OrderBy(g => g.Tier).ThenBy(g => g.Name).ToListAsync();
         }
 
         // Получить дар по ID с полной информацией

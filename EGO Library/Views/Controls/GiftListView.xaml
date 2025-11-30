@@ -206,25 +206,6 @@
                                                    Foreground="#CCCCCC"
                                                    TextAlignment="Center"/>
                                     </Border>
-
-                                    <!-- Описание (только при наведении) -->
-                                    <TextBlock Text="{Binding Description}" 
-                                               FontSize="9" 
-                                               TextAlignment="Center" 
-                                               TextWrapping="Wrap"
-                                               Foreground="#AAAAAA"
-                                               MaxHeight="0"
-                                               Margin="0,5,0,0">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
-                                                        <Setter Property="MaxHeight" Value="30"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
