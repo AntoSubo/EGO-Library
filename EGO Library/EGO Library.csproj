@@ -27,5 +27,20 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
+	<ItemGroup>
+	  <Content Remove="Resources\Images\EGO\Tier1\Безглавый портрет.png" />
+	  <Content Remove="Resources\Images\EGO\Tier1\Кара покойных.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Resource Include="Resources\Images\EGO\Tier1\Безглавый портрет.png" />
+	  <Resource Include="Resources\Images\EGO\Tier1\Кара покойных.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Update="Resources\Images\EGO\Tier1\Венец из роз.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 
 </Project>

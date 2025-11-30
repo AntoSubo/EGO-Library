@@ -3,10 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:EGO_Library.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
 
     <UserControl.Resources>
+        <converters:ImagePathConverter x:Key="ImagePathConverter"/>
+
         <Style x:Key="GiftCardStyle" TargetType="Border">
             <Setter Property="Background" Value="#2D2D30"/>
             <Setter Property="BorderBrush" Value="#404040"/>
@@ -172,34 +175,51 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Style="{StaticResource GiftCardStyle}"
-                                    Width="130" 
-                                    Height="150"
+                                    Width="140" 
+                                    Height="160"
                                     MouseLeftButtonDown="Border_MouseLeftButtonDown">
                                 <StackPanel>
-                                    <!-- Иконка и уровень -->
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
-                                        <TextBlock Text="{Binding Icon}" 
-                                                   FontSize="28" 
-                                                   VerticalAlignment="Center"/>
-                                        <TextBlock Text="{Binding Tier}" 
-                                                   FontSize="12" 
+                                    <!-- ИЗОБРАЖЕНИЕ вместо иконки -->
+                                    <Border Background="#1E1E1E" 
+                                            CornerRadius="6" 
+                                            Padding="2"
+                                            HorizontalAlignment="Center"
+                                            Margin="0,0,0,5">
+                                        <Image Source="{Binding ImagePath, Converter={StaticResource ImagePathConverter}}" 
+                                               Width="64" 
+                                               Height="64"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Уровень -->
+                                    <Border Background="#FFD700" 
+                                            CornerRadius="10" 
+                                            Padding="4,1"
+                                            HorizontalAlignment="Center"
+                                            Margin="0,0,0,5">
+                                        <TextBlock Text="{Binding Tier, StringFormat='Tier {0}'}" 
+                                                   FontSize="10" 
                                                    FontWeight="Bold"
-                                                   Foreground="#FFD700"
-                                                   VerticalAlignment="Bottom"
-                                                   Margin="5,0,0,2"/>
-                                    </StackPanel>
+                                                   Foreground="Black"
+                                                   TextAlignment="Center"/>
+                                    </Border>
 
                                     <!-- Название -->
                                     <TextBlock Text="{Binding Name}" 
                                                FontWeight="Bold" 
-                                               FontSize="14" 
+                                               FontSize="12" 
                                                TextAlignment="Center" 
                                                TextTrimming="CharacterEllipsis"
                                                Foreground="White" 
-                                               Margin="0,0,0,5"/>
+                                               Margin="0,0,0,5"
+                                               MaxHeight="32"/>
 
                                     <!-- Статус -->
-                                    <Border Background="#404040" CornerRadius="10" Padding="4,2" HorizontalAlignment="Center">
+                                    <Border Background="#404040" 
+                                            CornerRadius="10" 
+                                            Padding="4,2" 
+                                            HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding Status}" 
                                                    FontSize="10" 
                                                    FontWeight="SemiBold"
