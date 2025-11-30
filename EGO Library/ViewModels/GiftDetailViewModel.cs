@@ -40,23 +40,23 @@ namespace EGO_Library.ViewModels
 
         private async Task LoadRecipesAsync()
         {
-            if (_dataService != null && _gift?.Id > 0)
-            {
-                try
-                {
-                    var recipes = await _dataService.GetRecipesByGiftIdAsync(_gift.Id);
-                    Recipes.Clear();
-                    foreach (var recipe in recipes)
-                    {
-                        Recipes.Add(recipe);
-                    }
-                    OnPropertyChanged(nameof(HasRecipes));
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show($"Ошибка загрузки рецептов: {ex.Message}", "Ошибка");
-                }
-            }
+            //if (_dataService != null && _gift?.Id > 0)
+            //{
+            //    try
+            //    {
+            //        var recipes = await _dataService.GetRecipesByGiftIdAsync(_gift.Id);
+            //        Recipes.Clear();
+            //        foreach (var recipe in recipes)
+            //        {
+            //            Recipes.Add(recipe);
+            //        }
+            //        OnPropertyChanged(nameof(HasRecipes));
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        System.Windows.MessageBox.Show($"Ошибка загрузки рецептов: {ex.Message}", "Ошибка");
+            //    }
+            //}
         }
 
         private void ShowHelp()

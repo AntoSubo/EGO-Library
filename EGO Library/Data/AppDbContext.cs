@@ -23,7 +23,6 @@ namespace EGO_Library.Data
                 entity.HasKey(g => g.Id);
                 entity.Property(g => g.Name).IsRequired().HasMaxLength(100);
                 entity.Property(g => g.Status).HasMaxLength(50);
-                entity.Property(g => g.Icon).HasMaxLength(10);
                 entity.HasIndex(g => g.Name);
             });
 
@@ -68,7 +67,10 @@ namespace EGO_Library.Data
                 entity.Property(u => u.Username).IsRequired().HasMaxLength(50);
                 entity.Property(u => u.PasswordHash).IsRequired().HasMaxLength(255);
                 entity.Property(u => u.Email).HasMaxLength(100);
-                entity.HasIndex(u => u.Username).IsUnique(); // Уникальный логин
+                entity.HasIndex(u => u.Username).IsUnique();
+
+    
+                entity.Property(u => u.Id).ValueGeneratedOnAdd();
             });
         }
     }

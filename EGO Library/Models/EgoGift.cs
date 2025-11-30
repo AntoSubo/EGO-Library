@@ -17,7 +17,6 @@ namespace EGO_Library.Models
         public string Status { get; set; } = string.Empty;
 
         [MaxLength(10)]
-        public string Icon { get; set; } = string.Empty;
 
         public string ImagePath { get; set; } = string.Empty;
 

@@ -82,7 +82,7 @@ namespace EGO_Library.ViewModels
                     Id = 1,
                     Name = "Fusion of Wisdom",
                     Description = "Combine knowledge fragments to create ultimate wisdom",
-                    ResultGift = new EgoGift { Name = "Crystal of Wisdom", Tier = 4, Icon = "💎" },
+                    ResultGift = new EgoGift { Name = "Crystal of Wisdom", Tier = 4},
                     RequiredGifts = new List<EgoGift>
                     {
                         new EgoGift { Name = "Knowledge Shard", Tier = 2 },
@@ -90,20 +90,6 @@ namespace EGO_Library.ViewModels
                     },
                     Location = "Alchemy Lab",
                     Difficulty = "Hard"
-                },
-                new Recipe
-                {
-                    Id = 2,
-                    Name = "Flame Synthesis",
-                    Description = "Merge fire essences to create inferno gift",
-                    ResultGift = new EgoGift { Name = "Inferno", Tier = 3, Icon = "🔥" },
-                    RequiredGifts = new List<EgoGift>
-                    {
-                        new EgoGift { Name = "Fire Essence", Tier = 1 },
-                        new EgoGift { Name = "Spark Fragment", Tier = 2 }
-                    },
-                    Location = "Forge",
-                    Difficulty = "Medium"
                 }
             };
 

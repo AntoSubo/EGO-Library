@@ -106,7 +106,7 @@
                           BorderBrush="#555555">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding StringFormat='Tier {0}'}" Foreground="White"/>
+                            <TextBlock Text="{Binding StringFormat='Tier {0}'}" Foreground="Black"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -120,7 +120,7 @@
                           SelectedItem="{Binding SelectedStatus}"
                           Margin="0,0,0,20"
                           Background="#3C3C3C"
-                          Foreground="White"
+                          Foreground="Black"
                           BorderBrush="#555555"/>
 
                 <!-- Кнопки -->
