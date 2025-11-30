@@ -3,6 +3,8 @@ using EGO_Library.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using System.Threading.Tasks;
+using System;
 
 namespace EGO_Library.ViewModels
 {
@@ -27,10 +29,12 @@ namespace EGO_Library.ViewModels
             _navigationService = navigationService;
             _dataService = dataService;
 
+            // Инициализация команд
             GoBackCommand = new RelayCommand(_ => _navigationService.GoBack());
             HelpCommand = new RelayCommand(_ => ShowHelp());
             RefreshCommand = new RelayCommand(async _ => await LoadRecipesAsync());
 
+            // Загрузка рецептов
             _ = LoadRecipesAsync();
         }
 
@@ -38,13 +42,20 @@ namespace EGO_Library.ViewModels
         {
             if (_dataService != null && _gift?.Id > 0)
             {
-                var recipes = await _dataService.GetRecipesByGiftIdAsync(_gift.Id);
-                Recipes.Clear();
-                foreach (var recipe in recipes)
+                try
                 {
-                    Recipes.Add(recipe);
+                    var recipes = await _dataService.GetRecipesByGiftIdAsync(_gift.Id);
+                    Recipes.Clear();
+                    foreach (var recipe in recipes)
+                    {
+                        Recipes.Add(recipe);
+                    }
+                    OnPropertyChanged(nameof(HasRecipes));
                 }
-                OnPropertyChanged(nameof(HasRecipes));
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Ошибка загрузки рецептов: {ex.Message}", "Ошибка");
+                }
             }
         }
 
@@ -52,7 +63,14 @@ namespace EGO_Library.ViewModels
         {
             System.Windows.MessageBox.Show(
                 "Детальная информация о даре:\n\n" +
-                "- Название и иконка\n- Уровень (Tier)\n- Статус-эффект\n- Описание\n- Источники получения\n- Рецепты слияния",
+                "- Название и иконка\n" +
+                "- Уровень (Tier)\n" +
+                "- Статус-эффект\n" +
+                "- Основной эффект\n" +
+                "- Описание\n" +
+                "- Источники получения\n" +
+                "- Рецепты слияния (кликабельные)\n\n" +
+                "Нажмите на любой рецепт для перехода к списку всех рецептов.",
                 "Помощь");
         }
     }

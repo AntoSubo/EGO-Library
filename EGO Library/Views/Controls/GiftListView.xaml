@@ -22,6 +22,38 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <!-- Стили для кнопок в общем стиле -->
+        <Style x:Key="DarkButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#404040"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#555555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#505050"/>
+                    <Setter Property="BorderBrush" Value="#569CD6"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#2D2D30"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource DarkButtonStyle}">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="BorderBrush" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1C97EA"/>
+                    <Setter Property="BorderBrush" Value="#1C97EA"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="10">
@@ -32,7 +64,9 @@
 
         <!-- Левая панель фильтров -->
         <Border Grid.Column="0" 
-                Background="#FFF" 
+                Background="#2D2D30" 
+                BorderBrush="#404040"
+                BorderThickness="1"
                 CornerRadius="8"
                 Padding="15" 
                 Margin="0,0,10,0">
@@ -40,27 +74,36 @@
                 <TextBlock Text="Filters" 
                            FontSize="18" 
                            FontWeight="Bold" 
+                           Foreground="White"
                            Margin="0,0,0,15"/>
 
                 <!-- Поиск -->
                 <TextBlock Text="Search" 
                            FontWeight="SemiBold" 
+                           Foreground="#CCCCCC"
                            Margin="0,0,0,5"/>
                 <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,0,0,15" 
-                         Height="25"
-                         Padding="5"/>
+                         Height="30"
+                         Padding="5"
+                         Background="#3C3C3C"
+                         Foreground="White"
+                         BorderBrush="#555555"/>
 
                 <!-- Уровень -->
                 <TextBlock Text="Tier" 
                            FontWeight="SemiBold" 
+                           Foreground="#CCCCCC"
                            Margin="0,0,0,5"/>
                 <ComboBox ItemsSource="{Binding AvailableTiers}"
                           SelectedItem="{Binding SelectedTier}"
-                          Margin="0,0,0,15">
+                          Margin="0,0,0,15"
+                          Background="#3C3C3C"
+                          Foreground="White"
+                          BorderBrush="#555555">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding StringFormat='Tier {0}'}"/>
+                            <TextBlock Text="{Binding StringFormat='Tier {0}'}" Foreground="White"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -68,27 +111,21 @@
                 <!-- Статус -->
                 <TextBlock Text="Status" 
                            FontWeight="SemiBold" 
+                           Foreground="#CCCCCC"
                            Margin="0,0,0,5"/>
                 <ComboBox ItemsSource="{Binding AvailableStatuses}"
                           SelectedItem="{Binding SelectedStatus}"
-                          Margin="0,0,0,20"/>
+                          Margin="0,0,0,20"
+                          Background="#3C3C3C"
+                          Foreground="White"
+                          BorderBrush="#555555"/>
 
                 <!-- Кнопки -->
                 <Button Content="Clear Filters" 
-                        Height="30"
+                        Height="35"
                         Command="{Binding ClearFiltersCommand}"
+                        Style="{StaticResource DarkButtonStyle}"
                         Margin="0,0,0,10"/>
-
-                <!-- Статистика -->
-                <Border Background="#F5F5F5" CornerRadius="6" Padding="10">
-                    <StackPanel>
-                        <TextBlock Text="Statistics" 
-                                   FontWeight="SemiBold" 
-                                   Margin="0,0,0,5"/>
-                        <TextBlock Text="{Binding Gifts.Count, StringFormat='Total: {0}'}" 
-                                   FontSize="12"/>
-                    </StackPanel>
-                </Border>
             </StackPanel>
         </Border>
 
@@ -104,22 +141,20 @@
                 <TextBlock Text="EGO Library" 
                            FontSize="22" 
                            FontWeight="Bold"
+                           Foreground="White"
                            VerticalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                    <Button Content="Recipes" 
-                            Width="80" 
-                            Height="30" 
-                            Margin="5,0,0,0"
-                            Command="{Binding NavigateToRecipesCommand}"/>
                     <Button Content="About" 
                             Width="80" 
-                            Height="30" 
+                            Height="35" 
                             Margin="5,0,0,0"
+                            Style="{StaticResource DarkButtonStyle}"
                             Command="{Binding NavigateToAboutCommand}"/>
                     <Button Content="Help" 
                             Width="80" 
-                            Height="30" 
+                            Height="35" 
                             Margin="5,0,0,0"
+                            Style="{StaticResource PrimaryButtonStyle}"
                             Command="{Binding ShowHelpCommand}"/>
                 </StackPanel>
             </DockPanel>

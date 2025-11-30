@@ -61,7 +61,7 @@ namespace EGO_Library.Data
                       .UsingEntity(j => j.ToTable("RecipeRequiredGifts"));
             });
 
-            // ДОБАВИТЬ КОНФИГУРАЦИЮ ДЛЯ USER
+            
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.Id);

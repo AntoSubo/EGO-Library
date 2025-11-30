@@ -18,48 +18,59 @@ namespace EGO_Library.Services
             {
                 using var context = new AppDbContext();
 
-                // УДАЛЯЕМ И ПЕРЕСОЗДАЕМ БАЗУ ДАННЫХ
-                await context.Database.EnsureDeletedAsync();
+                // СОЗДАЕМ БД ЕСЛИ ЕЁ НЕТ (НЕ УДАЛЯЕМ СУЩЕСТВУЮЩУЮ!)
                 await context.Database.EnsureCreatedAsync();
 
-                Console.WriteLine("Database schema created successfully!");
+                Console.WriteLine("Database schema checked successfully!");
 
-                // Проверяем, есть ли уже пользователи
-                if (!await context.Users.AnyAsync())
+                // Проверяем, нужно ли заполнять данными
+                bool needSeed = !await context.Users.AnyAsync() || !await context.EgoGifts.AnyAsync();
+
+                if (needSeed)
                 {
-                    Console.WriteLine("Creating default admin user...");
+                    Console.WriteLine("Initializing database with data...");
 
-                    var adminUser = new User
+                    // СОЗДАЕМ ПОЛЬЗОВАТЕЛЯ ЕСЛИ НЕТ
+                    if (!await context.Users.AnyAsync())
                     {
-                        Username = "admin",
-                        PasswordHash = HashPassword("admin123"),
-                        Email = "admin@egolibrary.com",
-                        CreatedDate = DateTime.Now,
-                        LastLogin = DateTime.Now
-                    };
+                        Console.WriteLine("Creating default admin user...");
 
-                    await context.Users.AddAsync(adminUser);
-                    await context.SaveChangesAsync();
-                    Console.WriteLine("Default admin user created!");
+                        var adminUser = new User
+                        {
+                            Username = "admin",
+                            PasswordHash = HashPassword("admin123"),
+                            Email = "admin@egolibrary.com",
+                            CreatedDate = DateTime.Now,
+                            LastLogin = DateTime.Now
+                        };
+
+                        await context.Users.AddAsync(adminUser);
+                        await context.SaveChangesAsync();
+                        Console.WriteLine("Default admin user created!");
+                    }
+
+                    // СОЗДАЕМ ДАРЫ ЕСЛИ НЕТ
+                    if (!await context.EgoGifts.AnyAsync())
+                    {
+                        Console.WriteLine("Creating EGO gifts data...");
+
+                        var realGifts = CreateRealGifts();
+                        await context.EgoGifts.AddRangeAsync(realGifts);
+                        await context.SaveChangesAsync();
+
+                        await CreateRealRecipesAsync(context);
+                        Console.WriteLine("Real EGO gifts data created successfully!");
+                    }
+
+                    Console.WriteLine("Database initialized successfully!");
                 }
-
-                // Проверяем, есть ли уже дары
-                if (!await context.EgoGifts.AnyAsync())
+                else
                 {
-                    Console.WriteLine("Initializing database with REAL EGO gifts...");
+                    Console.WriteLine("Database already contains data. Skipping initialization.");
 
-                    // СОЗДАЕМ РЕАЛЬНЫЕ ДАННЫЕ
-                    var realGifts = CreateRealGifts();
-                    await context.EgoGifts.AddRangeAsync(realGifts);
-                    await context.SaveChangesAsync();
-
-                    // Создаем рецепты
-                    await CreateRealRecipesAsync(context);
-
-                    Console.WriteLine("Real EGO gifts data created successfully!");
+                    // Просто логируем текущее состояние
+                    await CheckDatabaseStatusAsync();
                 }
-
-                Console.WriteLine("Database initialized successfully!");
             }
             catch (Exception ex)
             {
@@ -184,7 +195,6 @@ namespace EGO_Library.Services
             return sources;
         }
 
-        // СОЗДАЕМ РЕАЛЬНЫЕ РЕЦЕПТЫ
         private static async Task CreateRealRecipesAsync(AppDbContext context)
         {
             var gifts = await context.EgoGifts.ToListAsync();
@@ -235,15 +245,11 @@ namespace EGO_Library.Services
             {
                 using var context = new AppDbContext();
                 var giftCount = await context.EgoGifts.CountAsync();
+                var userCount = await context.Users.CountAsync();
                 var sourcesCount = await context.Sources.CountAsync();
                 var recipesCount = await context.Recipes.CountAsync();
 
-                Console.WriteLine($"Database status: {giftCount} gifts, {sourcesCount} sources, {recipesCount} recipes");
-
-                if (giftCount == 0)
-                {
-                    Console.WriteLine("Database is empty. Run InitializeAsync to populate.");
-                }
+                Console.WriteLine($"Database status: {userCount} users, {giftCount} gifts, {sourcesCount} sources, {recipesCount} recipes");
             }
             catch (Exception ex)
             {
