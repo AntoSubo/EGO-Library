@@ -29,12 +29,12 @@ namespace EGO_Library.ViewModels
             _navigationService = navigationService;
             _dataService = dataService;
 
-            // Инициализация команд
+            // инициализация команд
             GoBackCommand = new RelayCommand(_ => _navigationService.GoBack());
             HelpCommand = new RelayCommand(_ => ShowHelp());
             RefreshCommand = new RelayCommand(async _ => await LoadRecipesAsync());
 
-            // Загрузка рецептов
+            // загрузка рецептов
             _ = LoadRecipesAsync();
         }
 

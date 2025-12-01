@@ -102,11 +102,11 @@ namespace EGO_Library.Services
             }
         }
 
-        public void Logout()
-        {
-            _currentUser = null;
-            IsAuthenticated = false;
-        }
+        //public void Logout()
+        //{
+        //    _currentUser = null;
+        //    IsAuthenticated = false;
+        //}
 
         private string HashPassword(string password)
         {

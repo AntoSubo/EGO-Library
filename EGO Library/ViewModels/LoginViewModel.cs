@@ -13,7 +13,7 @@ namespace EGO_Library.ViewModels
         private string _password;
         private string _errorMessage;
 
-        // Событие для очистки пароля в View
+        // событие для очистки пароля в View
         public event EventHandler RequestClearPassword;
 
         public string Username
@@ -73,7 +73,7 @@ namespace EGO_Library.ViewModels
             Password = string.Empty;
             ErrorMessage = string.Empty;
 
-            // Вызываем событие для очистки PasswordBox в View
+            // вызываем событие для очистки PasswordBox в View
             RequestClearPassword?.Invoke(this, EventArgs.Empty);
         }
     }

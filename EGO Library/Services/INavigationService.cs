@@ -4,14 +4,14 @@ namespace EGO_Library.Services
 {
     public interface INavigationService
     {
-        // Основная навигация
+        // основная навигация
         void NavigateToGiftList();
         void NavigateToRecipes();
         void NavigateToAbout();
         void NavigateToGiftDetail(EgoGift gift);
         void GoBack();
 
-        // НОВЫЕ МЕТОДЫ ДЛЯ АВТОРИЗАЦИИ
+        // авторизация
         void NavigateToLogin();
         void NavigateToRegister();
     }

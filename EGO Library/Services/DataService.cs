@@ -19,12 +19,12 @@ namespace EGO_Library.Services
                 var searchLower = searchText.Trim().ToLowerInvariant();
 
                 query = query.Where(g =>
-                    EF.Functions.Like(g.Name, $"%{searchText}%") || // Поиск без учета регистра
+                    EF.Functions.Like(g.Name, $"%{searchText}%") || // поиск без учета регистра
                     EF.Functions.Like(g.Description, $"%{searchText}%") ||
                     EF.Functions.Like(g.Status, $"%{searchText}%") ||
                     EF.Functions.Like(g.Keywords, $"%{searchText}%") ||
                     EF.Functions.Like(g.Effect, $"%{searchText}%") ||
-                    EF.Functions.Like(g.Acquisition, $"%{searchText}%")
+                    EF.Functions.Like(g.Acquisition, $"%{searchText}%") // найти по источникам, например событие жабка
                 );
             }
 

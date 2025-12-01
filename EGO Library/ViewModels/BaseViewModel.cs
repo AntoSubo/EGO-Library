@@ -13,7 +13,7 @@ namespace EGO_Library.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // Добавляем метод SetProperty для упрощения установки свойств
+        // упрощенние установки свойтсв
         protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value))

@@ -61,40 +61,17 @@ namespace EGO_Library.ViewModels
 
         private async Task LoadRecipesAsync()
         {
-            if (_dataService != null)
-            {
-                var recipes = await _dataService.GetAllRecipesAsync();
-                Recipes = new ObservableCollection<Recipe>(recipes);
-            }
-            else
-            {
-                // Заглушка для демонстрации
-                LoadSampleRecipes();
-            }
+            //if (_dataService != null)
+            //{
+            //    var recipes = await _dataService.GetAllRecipesAsync();
+            //    Recipes = new ObservableCollection<Recipe>(recipes);
+            //}
+            //else
+            //{
+
+            //}
         }
 
-        private void LoadSampleRecipes()
-        {
-            var sampleRecipes = new List<Recipe>
-            {
-                new Recipe
-                {
-                    Id = 1,
-                    Name = "Fusion of Wisdom",
-                    Description = "Combine knowledge fragments to create ultimate wisdom",
-                    ResultGift = new EgoGift { Name = "Crystal of Wisdom", Tier = 4},
-                    RequiredGifts = new List<EgoGift>
-                    {
-                        new EgoGift { Name = "Knowledge Shard", Tier = 2 },
-                        new EgoGift { Name = "Memory Crystal", Tier = 3 }
-                    },
-                    Location = "Alchemy Lab",
-                    Difficulty = "Hard"
-                }
-            };
-
-            Recipes = new ObservableCollection<Recipe>(sampleRecipes);
-        }
 
         private void FilterRecipes()
         {

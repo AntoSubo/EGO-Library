@@ -9,12 +9,12 @@ namespace EGO_Library.Views.Controls
         {
             InitializeComponent();
             Loaded += OnLoaded;
-            Unloaded += OnUnloaded; // Используем событие Unloaded вместо переопределения метода
+            Unloaded += OnUnloaded; 
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // Подписываемся на событие очистки из ViewModel
+
             if (DataContext is ViewModels.RegisterViewModel viewModel)
             {
                 viewModel.RequestClearPasswords += OnRequestClearPasswords;
@@ -23,7 +23,7 @@ namespace EGO_Library.Views.Controls
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            // Отписываемся от событий при выгрузке
+
             if (DataContext is ViewModels.RegisterViewModel viewModel)
             {
                 viewModel.RequestClearPasswords -= OnRequestClearPasswords;
@@ -32,7 +32,7 @@ namespace EGO_Library.Views.Controls
 
         private void OnRequestClearPasswords(object sender, System.EventArgs e)
         {
-            // Очищаем PasswordBox при запросе из ViewModel
+            
             PasswordBox.Password = string.Empty;
             ConfirmPasswordBox.Password = string.Empty;
         }

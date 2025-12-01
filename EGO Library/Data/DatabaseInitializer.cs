@@ -24,31 +24,45 @@ namespace EGO_Library.Services
 
                 await context.Database.EnsureCreatedAsync();
 
-
+                var hasUsers = await context.Users.AnyAsync();
+                var hasGifts = await context.EgoGifts.AnyAsync();
+                var hasSources = await context.Sources.AnyAsync();
                 // пользователя
 
-                var adminUser = new User
+                if (!hasUsers)
                 {
-                    Username = "admin",
-                    PasswordHash = HashPassword("admin123"),
-                    Email = "admin@egolibrary.com",
-                    CreatedDate = DateTime.Now,
-                    LastLogin = DateTime.Now
-                };
-                await context.Users.AddAsync(adminUser);
-                await context.SaveChangesAsync();
+                    var adminUser = new User
+                    {
+                        Username = "admin",
+                        PasswordHash = HashPassword("admin123"),
+                        Email = "admin@egolibrary.com",
+                        CreatedDate = DateTime.Now,
+                        LastLogin = DateTime.Now
+                    };
+                    await context.Users.AddAsync(adminUser);
+                    await context.SaveChangesAsync();
+                }
 
+                // если даров нет создаем их
+                if (!hasGifts)
+                {
+                    var gifts = CreateGifts();
+                    await context.EgoGifts.AddRangeAsync(gifts);
+                    await context.SaveChangesAsync();
+                }
 
-                // дары
+                // рецепты
+                //await CreateRecipesAsync(context);
 
-                var realGifts = CreateRealGifts();
-                await context.EgoGifts.AddRangeAsync(realGifts);
-                await context.SaveChangesAsync();
 
 
                 // источнеке
-                var giftsCount = await context.EgoGifts.CountAsync();
-                var sourcesCount = await context.Sources.CountAsync();
+                if (!hasSources)
+                {
+                    var giftsCount = await context.EgoGifts.CountAsync();
+                    var sourcesCount = await context.Sources.CountAsync();
+                }
+                
             }
             catch (Exception ex)
             {
@@ -64,7 +78,7 @@ namespace EGO_Library.Services
             return Convert.ToBase64String(hash);
         }
         // создание его даров
-        private static List<EgoGift> CreateRealGifts()
+        private static List<EgoGift> CreateGifts()
         {
             var gifts = new List<EgoGift>();
 
@@ -314,9 +328,9 @@ namespace EGO_Library.Services
 
         new EgoGift
         {
-            Name = "Вязка слизь",
+            Name = "Вязка слизь", 
             Tier = 1,
-            Status = "Разрыв",
+            Status = "Разрыв", 
             ImagePath = "Resources/Images/EGO/Tier1/Вязка слизь.png",
             Effect = "При попадании с помощью Пронзающего Скилла или Скилла принадлежности Чревоугодия, накладывает 2 defenseLevelDown.",
             Description = "Вязкая слизь, ослабляющая защиту врагов.",
@@ -497,6 +511,190 @@ namespace EGO_Library.Services
                 new Sources { Location = "Событие: Проклятый стрелöк", Type = "Event", DropRate = 0.08 }
             }
         },
+                new EgoGift
+        {
+            Name = "Упаковочная коробка",
+            Tier = 1,
+            Status = "Универсальный",
+            ImagePath = "Resources/Images/EGO/Tier1/Упаковочная коробка.png",
+            Effect = "(При Попадании Скиллами союзника) случайным образом выбирает один из следующих эффектов: burn, bleed, tremor, rupture, и sinking, затем накладывает 1 Значение выбранного эффекта (3 раза за ход). (При Убийстве союзниками) случайным образом выбирает один из следующих эффектов: Счётчик poise, Счётчик charge, haste, offenseLevelUp, and defenseLevelUp, затем накладывает 1 выбранный эффект на случайного союзника (3 раза за ход)",
+            Description = "Упаковочная коробка, случайным образом накладывающая различные эффекты при попадании и убийствах.",
+            Cost = 151,
+            SellPrice = 76,
+            Acquisition = "Тема 'Чудо в 20-м Районе БокГак' и Магазин",
+            Keywords = "универсальный, случайные эффекты, burn, bleed, tremor, rupture, sinking, poise, charge, haste, усиления",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Тема 'Чудо в 20-м Районе БокГак'", Type = "Theme", DropRate = 0.08 },
+                new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.12 }
+            }
+        },
+
+        new EgoGift
+        {
+            Name = "Истёртый точильный камень",
+            Tier = 1,
+            Status = "Рубящий",
+            ImagePath = "Resources/Images/EGO/Tier1/Истёртый точильный камень.png",
+            Effect = "[Эффекты применяются только к №3 размещённой Идентичности] Рубящие Скиллы получают +(кол-во рубящих базовых атакующих Скиллов) Уровней Атаки. (одни и те же Скиллы не учитываются дважды; макс. 3). При атаке врага со Слабостью (сопротивление больше 1.0; состояние Оглушения не учитывается) к рубящему урону, наносит на +(5 + (сопротивление цели рубящему урону x 10))% больше урона. (макс. 25%)",
+            Description = "Истёртый точильный камень, усиливающий рубящие атаки для третьей позиции.",
+            Cost = 148,
+            SellPrice = 74,
+            Acquisition = "Магазин",
+            Keywords = "рубящий, позиция 3, уровень атаки, слабость, усиление урона, точильный камень",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.15 }
+            }
+        },
+
+        new EgoGift
+        {
+            Name = "Декоративная подкова",
+            Tier = 1,
+            Status = "Дыхание",
+            ImagePath = "Resources/Images/EGO/Tier1/Декоративная подкова.png",
+            Effect = "[Начало Хода] Накладывает 2 poise на случайного союзника без poise. Когда у всех союзников есть poise, накладывает +1 Счётчик poise на всех союзников вместо предыдущего эффекта.",
+            Description = "Декоративная подкова, распределяющая poise между союзниками.",
+            Cost = 154,
+            SellPrice = 77,
+            Acquisition = "Магазин",
+            Keywords = "poise, дыхание, распределение, подкова, удача",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.14 }
+            }
+        },
+
+        new EgoGift
+        {
+            Name = "Грязный гаечный ключ",
+            Tier = 1,
+            Status = "Тремор",
+            ImagePath = "Resources/Images/EGO/Tier1/Грязный гаечный ключ.png",
+            Effect = "Дробящие Скиллы наносят на +10% больше урона. Финальная Монетка Дробящих Скилов накладывает 2 tremor при ударе. (Один раз за Ход)",
+            Description = "Грязный гаечный ключ, усиливающий дробящие атаки и накладывающий тремор.",
+            Cost = 148,
+            SellPrice = 74,
+            Acquisition = "Тема 'МОРЕ' и Магазин",
+            Keywords = "tremor, дробящий урон, финальная монетка, гаечный ключ",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Тема 'МОРЕ'", Type = "Theme", DropRate = 0.09 },
+                new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.11 }
+            }
+        },
+
+        new EgoGift
+        {
+            Name = "Отклонение пандикона",
+            Tier = 1,
+            Status = "Тремор",
+            ImagePath = "Resources/Images/EGO/Tier1/Отклонение пандикона.png",
+            Effect = "Первое Начало Хода в Бою: накладывает 4 tremor и +4 Счётчика tremor на всех врагов (или на все Части Аномалий). При попадании Скиллом принадлежности Зависти, накладывает на цель 2 tremor.",
+            Description = "Отклонение пандикона, массово накладывающее тремор в начале боя.",
+            Cost = 145,
+            SellPrice = 73,
+            Acquisition = "Магазин и Событие: Паровая транспортная машина",
+            Keywords = "tremor, зависть, начало боя, массовый эффект, пандикон",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.13 },
+                new Sources { Location = "Событие: Паровая транспортная машина", Type = "Event", DropRate = 0.07 }
+            }
+        },
+
+        new EgoGift
+        {
+            Name = "Расплавленный парафин",
+            Tier = 1,
+            Status = "Огонь",
+            ImagePath = "Resources/Images/EGO/Tier1/Расплавленный парафин.png",
+            Effect = "При победе в Cтолкновении с помощью Скилла, наносящего burn, Счётчик burn или 'Уникальный burn', накладывает на цель (количество оставшихся Монеток / 2) burn.",
+            Description = "Расплавленный парафин, усиливающий горение при победе в столкновении.",
+            Cost = 150,
+            SellPrice = 75,
+            Acquisition = "Магазин и Событие: Пророк кожи",
+            Keywords = "burn, огонь, победа в столкновении, монеты, парафин",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.12 },
+                new Sources { Location = "Событие: Пророк кожи", Type = "Event", DropRate = 0.08 }
+            }
+        },
+
+        new EgoGift
+        {
+            Name = "Скрижаль",
+            Tier = 1,
+            Status = "Поддержка",
+            ImagePath = "Resources/Images/EGO/Tier1/Скрижаль.png",
+            Effect = "Каждый раз, когда враг Оглушается, союзник с наименьшим HP восстанавливает 5% от своего максимального HP. Если у указанного союзника есть Скилл принадлежности Чревоугодия, он восстанавливает 10% от максимального HP вместо предыдущего эффекта.",
+            Description = "Скрижаль, восстанавливающая здоровье при оглушении врагов.",
+            Cost = 165,
+            SellPrice = 83,
+            Acquisition = "Магазин и Событие: Писец небесного палача",
+            Keywords = "heal, восстановление, оглушение, чревоугодие, скрижаль",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.11 },
+                new Sources { Location = "Событие: Писец небесного палача", Type = "Event", DropRate = 0.09 }
+            }
+        },
+
+        new EgoGift
+        {
+            Name = "Ещё один пластырь",
+            Tier = 1,
+            Status = "Пронзающий",
+            ImagePath = "Resources/Images/EGO/Tier1/Ещё один пластырь.png",
+            Effect = "[Конец Хода] Cреди союзников с bleed, Идентичность с наименьшим HP восстанавливает 5% от ее макс. HP.",
+            Description = "Ещё один пластырь, восстанавливающий здоровье союзникам с кровотечением.",
+            Cost = 150,
+            SellPrice = 75,
+            Acquisition = "Магазин и Событие: Калечащий плюшевый мишка",
+            Keywords = "heal, bleed, восстановление, пластырь, кровотечение",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.14 },
+                new Sources { Location = "Событие: Калечащий плюшевый мишка", Type = "Event", DropRate = 0.06 }
+            }
+        },
+
+        new EgoGift
+        {
+            Name = "Высокоэластичная обувь из стали",
+            Tier = 1,
+            Status = "Пронзающий",
+            ImagePath = "Resources/Images/EGO/Tier1/Высокоэластичная обувь из стали.png",
+            Effect = "[Эффекты применяется только к №3 размещённым Идентичностям] Пронзающие Скиллы получают +(кол-во пронзающие базовых атакующих Скиллов) Уровень Атаки (одни и те же Скиллы не учитываются дважды; макс. 3). При 3+ haste: когда атакует врага, наносит на +(10 + (haste на себе x 3))% больше пронзающего урона (макс. 25%).",
+            Description = "Высокоэластичная обувь из стали, усиливающая пронзающие атаки для третьей позиции.",
+            Cost = 148,
+            SellPrice = 74,
+            Acquisition = "Магазин", 
+            Keywords = "пронзающий, позиция 3, уровень атаки, haste, усиление урона, обувь",
+        },
+
+        new EgoGift
+        {
+            Name = "Безглавый портрет",
+            Tier = 1,
+            Status = "Утопание",
+            ImagePath = "Resources/Images/EGO/Tier1/Безглавый портрет.png",
+            Effect = "[Начало Фазы Сражения] Накладывается 2 Утопание на всех врагов с SP ниже 0. (для Аномалий, на одну случайную Часть) За каждый использованный Скилл принадлежности Зависти, накладывает 1 Утопание, случайно распределяющийся между врагами, на следующий Ход. (для Аномалий, на одну случайную Часть)", 
+            Description = "Безглавый портрет, связанный с утопанием.",
+            Cost = 151,
+            SellPrice = 76,
+            Acquisition = "Магазин и Событие: Портрет определенного дня",
+            Keywords = "sinking, утопание, портрет",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.12 },
+                new Sources { Location = "Событие: Портрет определенного дня", Type = "Event", DropRate = 0.08 }
+            }
+        },
+
+
 
         new EgoGift
         {
@@ -1197,28 +1395,46 @@ namespace EGO_Library.Services
                 new Sources { Location = "Тема 'Бесконечное шествие'", Type = "Theme", DropRate = 0.1 },
                 new Sources { Location = "Магазин", Type = "Shop", DropRate = 0.06 }
             }
-        }
+        },
+
+                new EgoGift
+        {
+            Name = "Лунный остаток",
+            Tier = 5,
+            ImagePath = "Resources/Images/EGO/Tier5/Лунный остаток.png", 
+            Effect = "Считается ЭГО Даром 5 Ранга. Может быть продан в Магазине или использован для Объединения.",
+            Description = "Лунный остаток, используемый для создания других ЭГО даров",
+            Cost = 500,
+            SellPrice = 250,
+            Acquisition = "Дубликат ЭГО Дара V Ранга",
+            Keywords = "лунный остаток, материал, создание, объединение",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Дубликат ЭГО Дара V Ранга", Type = "Duplicate", DropRate = 0.05 }
+            }
+        },
+
+        new EgoGift
+        {
+            Name = "Память о луне",
+            Tier = 5,
+            ImagePath = "Resources/Images/EGO/Tier5/Память о луне.png",
+            Effect = "Все типы сопротивления врагов (для Аномалий, все части тела) меняются на 'Фатальные'.",
+            Description = "Память о луне, меняющая сопротивления врагов на фатальные",
+            Cost = 600,
+            SellPrice = 300,
+            Acquisition = "Рецепт",
+            Keywords = "сопротивление, фатальные, аномалии, память, луна",
+            Sources = new List<Sources>
+            {
+                new Sources { Location = "Соединить Разрубленная память + Проколотая память + Раздробленная память + Фрагмент греха + Фрагмент греха"}
+            }
+        },
+
+
     });
 
             return gifts;
-        }
-
-        public static async Task CheckDatabaseStatusAsync()
-        {
-            try
-            {
-                using var context = new AppDbContext();
-                var giftCount = await context.EgoGifts.CountAsync();
-                var userCount = await context.Users.CountAsync();
-                var sourcesCount = await context.Sources.CountAsync();
-                var recipesCount = await context.Recipes.CountAsync();
-
-                Console.WriteLine($"Database status: {userCount} users, {giftCount} gifts, {sourcesCount} sources, {recipesCount} recipes");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error checking database status: {ex.Message}");
-            }
         }
     }
 }

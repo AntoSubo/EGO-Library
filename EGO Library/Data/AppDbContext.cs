@@ -17,7 +17,7 @@ namespace EGO_Library.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Конфигурация EgoGift
+            // конфигурация EgoGift
             modelBuilder.Entity<EgoGift>(entity =>
             {
                 entity.HasKey(g => g.Id);
@@ -26,7 +26,7 @@ namespace EGO_Library.Data
                 entity.HasIndex(g => g.Name);
             });
 
-            // Конфигурация Sources
+            // конфигурация Sources
             modelBuilder.Entity<Sources>(entity =>
             {
                 entity.HasKey(s => s.Id);
@@ -39,7 +39,7 @@ namespace EGO_Library.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Конфигурация Recipe
+            // конфигурация Recipe
             modelBuilder.Entity<Recipe>(entity =>
             {
                 entity.HasKey(r => r.Id);
@@ -48,13 +48,13 @@ namespace EGO_Library.Data
                 entity.Property(r => r.Location).HasMaxLength(100);
                 entity.Property(r => r.Difficulty).HasMaxLength(20);
 
-                // Связь с результирующим даром
+                // связь с результирующим даром
                 entity.HasOne(r => r.ResultGift)
                       .WithMany(g => g.ResultRecipes)
                       .HasForeignKey(r => r.ResultGiftId)
                       .OnDelete(DeleteBehavior.Cascade);
 
-                // Связь многие-ко-многим с требуемыми дарами
+                // связь многие-ко-многим с требуемыми дарами
                 entity.HasMany(r => r.RequiredGifts)
                       .WithMany(g => g.RequiredInRecipes)
                       .UsingEntity(j => j.ToTable("RecipeRequiredGifts"));

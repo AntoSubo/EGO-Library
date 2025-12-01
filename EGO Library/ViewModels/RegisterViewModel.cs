@@ -16,7 +16,7 @@ namespace EGO_Library.ViewModels
         private string _errorMessage;
         private string _successMessage;
 
-        // Событие для запроса очистки паролей в View
+        // событие для запроса очистки паролей в View
         public event EventHandler RequestClearPasswords;
 
         public string Username
@@ -114,7 +114,6 @@ namespace EGO_Library.ViewModels
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
 
-            // Вызываем событие для очистки PasswordBox в View
             RequestClearPasswords?.Invoke(this, EventArgs.Empty);
         }
 

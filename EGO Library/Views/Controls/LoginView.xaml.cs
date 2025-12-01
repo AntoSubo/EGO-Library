@@ -9,7 +9,7 @@ namespace EGO_Library.Views.Controls
         {
             InitializeComponent();
             Loaded += OnLoaded;
-            Unloaded += OnUnloaded; // Используем событие Unloaded вместо переопределения метода
+            Unloaded += OnUnloaded; 
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)

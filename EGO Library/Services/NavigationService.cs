@@ -17,7 +17,7 @@ namespace EGO_Library.Services
             _dataService = dataService;
         }
 
-        // Основная навигация
+        // основная навигация
         public void NavigateToGiftList()
         {
             var giftListView = new GiftListView();
@@ -46,7 +46,7 @@ namespace EGO_Library.Services
             _mainViewModel.CurrentView = giftDetailView;
         }
 
-        // НОВЫЕ МЕТОДЫ ДЛЯ АВТОРИЗАЦИИ
+        // атризаця
         public void NavigateToLogin()
         {
             _mainViewModel.ShowLoginView();

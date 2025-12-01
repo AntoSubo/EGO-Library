@@ -29,25 +29,22 @@ namespace EGO_Library.ViewModels
             _authService = authService;
             _dataService = dataService;
 
-            // ВАЖНО: создаем NavigationService после инициализации полей
             _navigationService = new NavigationService(this, _authService, _dataService);
 
-            // Подписываемся на изменения авторизации
             _authService.AuthenticationChanged += OnAuthenticationChanged;
 
             NavigateToGiftListCommand = new RelayCommand(_ => _navigationService.NavigateToGiftList());
             NavigateToRecipesCommand = new RelayCommand(_ => _navigationService.NavigateToRecipes());
             NavigateToAboutCommand = new RelayCommand(_ => _navigationService.NavigateToAbout());
-            LogoutCommand = new RelayCommand(_ => _authService.Logout());
+            //LogoutCommand = new RelayCommand(_ => _authService.Logout());
 
-            // ВАЖНО: проверяем авторизацию и показываем соответствующее view
             if (_authService.IsAuthenticated)
             {
                 _navigationService.NavigateToGiftList();
             }
             else
             {
-                ShowLoginView(); // ПОКАЗЫВАЕМ ФОРМУ ВХОДА ПРИ ЗАПУСКЕ
+                ShowLoginView(); 
             }
         }
 
