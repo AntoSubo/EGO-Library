@@ -147,6 +147,12 @@
                            Foreground="White"
                            VerticalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <Button Content="Recipes" 
+                            Width="80" 
+                            Height="35" 
+                            Margin="5,0,0,0"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding NavigateToRecipesCommand}"/>
                     <Button Content="About" 
                             Width="80" 
                             Height="35" 

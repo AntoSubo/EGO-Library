@@ -14,13 +14,10 @@ namespace EGO_Library
 
             try
             {
-                Console.WriteLine("=== STARTING APPLICATION ===");
 
                 // ПРИНУДИТЕЛЬНО ИНИЦИАЛИЗИРУЕМ БАЗУ ДАННЫХ
                 await DatabaseInitializer.InitializeAsync();
 
-                // ПРОВЕРЯЕМ СТАТУС
-                await DatabaseInitializer.CheckDatabaseStatusAsync();
 
                 // Создаем сервисы
                 var authService = new AuthService();
@@ -37,7 +34,6 @@ namespace EGO_Library
                 MainWindow = new MainWindow { DataContext = mainViewModel };
                 MainWindow.Show();
 
-                Console.WriteLine("=== APPLICATION STARTED SUCCESSFULLY ===");
             }
             catch (Exception ex)
             {

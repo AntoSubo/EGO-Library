@@ -15,7 +15,7 @@ namespace EGO_Library.ViewModels
         private readonly DataService _dataService;
 
         public EgoGift Gift => _gift;
-        public ObservableCollection<Recipe> Recipes { get; } = new ObservableCollection<Recipe>();
+        public ObservableCollection<Recipes> Recipes { get; } = new ObservableCollection<Recipes>();
 
         public bool HasRecipes => Recipes.Any();
 

@@ -2,6 +2,7 @@
 using EGO_Library.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,13 +43,36 @@ namespace EGO_Library.Services
         }
 
         // Получить все рецепты
-        public async Task<List<Recipe>> GetAllRecipesAsync()
+        public async Task<List<Recipes>> GetAllRecipesAsync()
         {
-            using var context = new AppDbContext();
-            return await context.Recipes
-                .Include(r => r.ResultGift)
-                .Include(r => r.RequiredGifts)
-                .ToListAsync();
+            try
+            {
+                using var context = new AppDbContext();
+                Debug.WriteLine("DataService: Загружаем рецепты из базы...");
+
+                // Явно загружаем связанные данные
+                var recipes = await context.Recipes
+                    .Include(r => r.ResultGift)
+                    .Include(r => r.RequiredGifts)
+                    .ToListAsync();
+
+                Debug.WriteLine($"DataService: Загружено {recipes.Count} рецептов");
+
+                foreach (var recipe in recipes)
+                {
+                    Debug.WriteLine($"  - {recipe.Name}");
+                    Debug.WriteLine($"    ResultGift: {recipe.ResultGift?.Name}");
+                    Debug.WriteLine($"    RequiredGifts: {recipe.RequiredGifts?.Count}");
+                }
+
+                return recipes;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"DataService ОШИБКА: {ex.Message}");
+                Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                return new List<Recipes>();
+            }
         }
 
         // Получить уникальные Tier для фильтров

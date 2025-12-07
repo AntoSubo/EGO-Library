@@ -2,7 +2,7 @@
 
 namespace EGO_Library.Models
 {
-    public class Sources 
+    public class Sources
     {
         public int Id { get; set; }
         public string Location { get; set; } = string.Empty;

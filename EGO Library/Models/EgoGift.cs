@@ -30,7 +30,7 @@ namespace EGO_Library.Models
         public int SellPrice { get; set; }
         public string Acquisition { get; set; } = string.Empty;
         public virtual ICollection<Sources> Sources { get; set; } = new List<Sources>();
-        public virtual ICollection<Recipe> ResultRecipes { get; set; } = new List<Recipe>();
-        public virtual ICollection<Recipe> RequiredInRecipes { get; set; } = new List<Recipe>();
+        public virtual ICollection<Recipes> ResultRecipes { get; set; } = new List<Recipes>();
+        public virtual ICollection<Recipes> RequiredInRecipes { get; set; } = new List<Recipes>();
     }
 }

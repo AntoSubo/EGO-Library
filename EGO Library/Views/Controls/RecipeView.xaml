@@ -3,8 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:EGO_Library.Converters"
+             xmlns:local="clr-namespace:EGO_Library.Views.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
+
+    <UserControl.Resources>
+        <converters:ImagePathConverter x:Key="ImagePathConverter"/>
+
+        <!-- Стиль для TextBlock с обрезкой текста -->
+        <Style x:Key="TextBlockTrimming" TargetType="TextBlock">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+        </Style>
+
+        <!-- Шаблон для отображения списка даров -->
+        <DataTemplate x:Key="GiftItemTemplate">
+            <Border Background="#404040" 
+                    CornerRadius="4" 
+                    Padding="5" 
+                    Margin="0,2">
+                <TextBlock Text="{Binding Name}" 
+                           Foreground="White" 
+                           FontSize="12"
+                           ToolTip="{Binding Name}"/>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
 
     <Grid Margin="10" Background="#1E1E1E">
         <Grid.RowDefinitions>
@@ -15,10 +40,27 @@
 
         <!-- Заголовок -->
         <DockPanel Grid.Row="0" Margin="0,0,0,15">
-            <TextBlock Text="Рецепты Слияния" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       Foreground="White"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Рецепты Слияния" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="White"/>
+                <TextBlock Text="{Binding TotalRecipes, StringFormat=' (Всего: {0})'}" 
+                           FontSize="24"
+                           Foreground="Gray"
+                           Margin="10,0,0,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasRecipes}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
             <Button Content="Назад" 
                     Width="80" 
                     Height="30" 
@@ -40,13 +82,17 @@
                          Background="#3C3C3C"
                          Foreground="White"
                          BorderBrush="#555555"
-                         ToolTip="Поиск рецептов..."/>
+                         ToolTip="Поиск по названию или описанию"/>
+
+                <TextBlock Text="Сложность:" 
+                           Foreground="White" 
+                           VerticalAlignment="Center"
+                           Margin="10,0,5,0"/>
 
                 <ComboBox ItemsSource="{Binding AvailableDifficulties}" 
                          SelectedItem="{Binding SelectedDifficulty}"
                          Width="120" 
                          Height="30"
-                         Margin="10,0,0,0"
                          Background="#3C3C3C"
                          Foreground="White"/>
 
@@ -58,8 +104,50 @@
             </StackPanel>
         </Border>
 
+        <!-- Состояние: Нет рецептов -->
+        <Grid Grid.Row="2">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasRecipes}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <Border Background="#2D2D30" 
+                    CornerRadius="8" 
+                    Padding="20">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="Рецепты не найдены" 
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               Foreground="White"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Попробуйте изменить фильтры или проверьте базу данных" 
+                               Foreground="#CCCCCC"
+                               HorizontalAlignment="Center"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
         <!-- Список рецептов -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="2" 
+                      VerticalScrollBarVisibility="Auto">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasRecipes}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+
             <ItemsControl ItemsSource="{Binding Recipes}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -73,20 +161,23 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="200"/>
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Левая часть: информация о рецепте -->
-                                <StackPanel Grid.Column="0">
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
                                     <TextBlock Text="{Binding Name}" 
                                                FontSize="18" 
                                                FontWeight="Bold" 
-                                               Foreground="White"/>
+                                               Foreground="White"
+                                               Style="{StaticResource TextBlockTrimming}"/>
 
                                     <TextBlock Text="{Binding Description}" 
                                                TextWrapping="Wrap" 
                                                Foreground="#CCCCCC"
-                                               Margin="0,5,0,10"/>
+                                               Margin="0,5,0,10"
+                                               MaxHeight="60"
+                                               TextTrimming="CharacterEllipsis"/>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                         <TextBlock Text="Локация: " 
@@ -101,7 +192,7 @@
                                                    FontWeight="SemiBold" 
                                                    Foreground="#AAAAAA"/>
                                         <TextBlock Text="{Binding Difficulty}" 
-                                                   Foreground="{Binding Difficulty, Converter={StaticResource DifficultyToColorConverter}}"/>
+                                                   Foreground="White"/>
                                     </StackPanel>
 
                                     <!-- Требуемые дары -->
@@ -110,50 +201,63 @@
                                                Foreground="#AAAAAA"
                                                Margin="0,10,0,5"/>
 
-                                    <ItemsControl ItemsSource="{Binding RequiredGifts}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Background="#404040" 
-                                                        CornerRadius="4" 
-                                                        Padding="5" 
-                                                        Margin="0,2">
-                                                    <TextBlock Text="{Binding Name}" 
-                                                               Foreground="White" 
-                                                               FontSize="12"/>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+                                    <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding RequiredGifts}"
+                                                      ItemTemplate="{StaticResource GiftItemTemplate}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                    </ScrollViewer>
                                 </StackPanel>
 
                                 <!-- Правая часть: результат -->
                                 <Border Grid.Column="1" 
                                         Background="#007ACC" 
                                         CornerRadius="6" 
-                                        Padding="10" 
-                                        Margin="10,0,0,0"
-                                        Width="150">
+                                        Padding="10"
+                                        Margin="10,0,0,0">
                                     <StackPanel>
                                         <TextBlock Text="Результат" 
                                                    FontWeight="Bold" 
                                                    Foreground="White"
                                                    HorizontalAlignment="Center"/>
 
-                                        <TextBlock Text="{Binding ResultGift.Name}" 
-                                                   FontWeight="SemiBold" 
-                                                   Foreground="White"
-                                                   TextAlignment="Center"
-                                                   Margin="0,5,0,0"/>
+                                        <Border Background="#3C3C3C" 
+                                                CornerRadius="4" 
+                                                Padding="5" 
+                                                Margin="0,5">
+                                            <TextBlock Text="{Binding ResultGift.Name}" 
+                                                       FontWeight="SemiBold" 
+                                                       Foreground="White"
+                                                       TextAlignment="Center"
+                                                       Style="{StaticResource TextBlockTrimming}"/>
+                                        </Border>
 
-                                        <TextBlock Text="{Binding ResultGift.Icon}" 
-                                                   FontSize="20"
-                                                   HorizontalAlignment="Center"
-                                                   Margin="0,5,0,0"/>
+                                        <Image Source="{Binding ResultGift.ImagePath, Converter={StaticResource ImagePathConverter}}" 
+                                               Width="50" 
+                                               Height="50"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,5,0,0"
+                                               ToolTip="{Binding ResultGift.Name}"/>
 
-                                        <TextBlock Text="{Binding ResultGift.Tier, StringFormat='Tier {0}'}" 
-                                                   FontSize="10" 
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                                            <TextBlock Text="Tier " 
+                                                       FontSize="10" 
+                                                       Foreground="#CCCCCC"/>
+                                            <TextBlock Text="{Binding ResultGift.Tier}" 
+                                                       FontSize="10" 
+                                                       Foreground="White"
+                                                       FontWeight="Bold"/>
+                                        </StackPanel>
+
+                                        <TextBlock Text="{Binding ResultGift.Status}" 
+                                                   FontSize="9" 
                                                    Foreground="#CCCCCC"
-                                                   HorizontalAlignment="Center"/>
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>

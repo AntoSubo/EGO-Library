@@ -7,8 +7,8 @@ namespace EGO_Library.Data
     {
         public DbSet<EgoGift> EgoGifts { get; set; }
         public DbSet<Sources> Sources { get; set; }
-        public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<User> Users { get; set; } 
+        public DbSet<Recipes> Recipes { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,7 +40,7 @@ namespace EGO_Library.Data
             });
 
             // конфигурация Recipe
-            modelBuilder.Entity<Recipe>(entity =>
+            modelBuilder.Entity<Recipes>(entity =>
             {
                 entity.HasKey(r => r.Id);
                 entity.Property(r => r.Name).HasMaxLength(100);
@@ -60,7 +60,7 @@ namespace EGO_Library.Data
                       .UsingEntity(j => j.ToTable("RecipeRequiredGifts"));
             });
 
-            
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.Id);
@@ -69,7 +69,7 @@ namespace EGO_Library.Data
                 entity.Property(u => u.Email).HasMaxLength(100);
                 entity.HasIndex(u => u.Username).IsUnique();
 
-    
+
                 entity.Property(u => u.Id).ValueGeneratedOnAdd();
             });
         }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EGO_Library.Models
 {
-    public class Recipe
+    public class Recipes
     {
         public int Id { get; set; }
 
@@ -26,9 +26,9 @@ namespace EGO_Library.Models
         [MaxLength(20)]
         public string Difficulty { get; set; } = string.Empty;
 
-        public Recipe() { }
+        public Recipes() { }
 
-        public Recipe(string name, string description, EgoGift resultGift, List<EgoGift> requiredGifts, string location = "Mirror Dungeon")
+        public Recipes(string name, string description, EgoGift resultGift, List<EgoGift> requiredGifts, string location = "Mirror Dungeon")
         {
             Name = name;
             Description = description;
@@ -37,8 +37,8 @@ namespace EGO_Library.Models
             Location = location;
             Difficulty = resultGift.Tier switch
             {
-                4 or 5 => "Hard",
-                3 => "Medium",
+                5 => "Hard",
+                4 or 3 => "Medium",
                 _ => "Easy"
             };
         }
