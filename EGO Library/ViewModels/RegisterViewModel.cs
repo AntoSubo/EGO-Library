@@ -116,10 +116,5 @@ namespace EGO_Library.ViewModels
 
             RequestClearPasswords?.Invoke(this, EventArgs.Empty);
         }
-
-        private void NavigateToLogin()
-        {
-            _navigationService.NavigateToLogin();
-        }
     }
 }

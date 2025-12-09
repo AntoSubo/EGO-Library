@@ -3,6 +3,7 @@ using EGO_Library.ViewModels;
 using EGO_Library.Views;
 using System.Windows;
 using System.Threading.Tasks;
+using EGO_Library.Data;
 
 namespace EGO_Library
 {
@@ -16,7 +17,7 @@ namespace EGO_Library
             {
 
                 // ПРИНУДИТЕЛЬНО ИНИЦИАЛИЗИРУЕМ БАЗУ ДАННЫХ
-                await DatabaseInitializer.InitializeAsync();
+                await DatabaseInitializer.CreateDatabaseAsync();
 
 
                 // Создаем сервисы

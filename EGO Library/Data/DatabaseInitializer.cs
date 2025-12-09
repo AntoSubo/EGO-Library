@@ -1,5 +1,5 @@
-﻿using EGO_Library.Data;
-using EGO_Library.Models;
+﻿using EGO_Library.Models;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,54 +8,23 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EGO_Library.Services
+namespace EGO_Library.Data
 {
     public class DatabaseInitializer
     {
-        public static async Task InitializeAsync()
+        public static async Task CreateDatabaseAsync(string dbPath = "ego_library.db")
         {
             try
             {
-                using var context = new AppDbContext();
+                using var context = new AppDbContext(dbPath);
 
-                await context.Database.EnsureDeletedAsync();
+                // Создаем БД, если её нет (не пересоздаем если есть)
                 await context.Database.EnsureCreatedAsync();
 
-                var hasUsers = await context.Users.AnyAsync();
-                var hasGifts = await context.EgoGifts.AnyAsync();
-                var hasSources = await context.Sources.AnyAsync();
-                var hasRecipes = await context.Recipes.AnyAsync();
-
-                if (!hasUsers)
+                // Проверяем, есть ли данные в БД
+                if (!await context.EgoGifts.AnyAsync())
                 {
-                    var adminUser = new User
-                    {
-                        Username = "admin",
-                        PasswordHash = HashPassword("admin123"),
-                        Email = "admin@egolibrary.com",
-                        CreatedDate = DateTime.Now,
-                        LastLogin = DateTime.Now
-                    };
-                    await context.Users.AddAsync(adminUser);
-                    await context.SaveChangesAsync();
-                }
-
-                if (!hasGifts)
-                {
-                    var gifts = CreateGifts();
-                    await context.EgoGifts.AddRangeAsync(gifts);
-                    await context.SaveChangesAsync();
-                }
-
-                if (!hasRecipes)
-                {
-                    await CreateRecipesAsync(context);
-                }
-
-                if (!hasSources)
-                {
-                    var giftsCount = await context.EgoGifts.CountAsync();
-                    var sourcesCount = await context.Sources.CountAsync();
+                    await DataAsync(context);
                 }
             }
             catch (Exception ex)
@@ -63,13 +32,22 @@ namespace EGO_Library.Services
                 throw;
             }
         }
-
-        private static string HashPassword(string password)
+        private static async Task DataAsync(AppDbContext context)
         {
-            using var sha256 = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(password);
-            var hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
+
+            // 1. Создаем дары
+            var gifts = CreateGifts();
+            await context.EgoGifts.AddRangeAsync(gifts);
+            await context.SaveChangesAsync();
+            Console.WriteLine($"Добавлено {gifts.Count} EGO даров");
+
+            // 2. Создаем рецепты
+            await CreateRecipesAsync(context);
+            Console.WriteLine($"Рецепты созданы");
+
+            // 3. Проверяем целостность
+            var giftNames = await context.EgoGifts.Select(g => g.Name).ToListAsync();
+            Console.WriteLine($"Проверено {giftNames.Count} уникальных даров");
         }
 
         private static List<EgoGift> CreateGifts()

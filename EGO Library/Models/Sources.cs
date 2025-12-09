@@ -13,7 +13,6 @@ namespace EGO_Library.Models
         // Внешний ключ
         public int EgoGiftId { get; set; }
 
-        // Навигационное свойство
         public virtual EgoGift EgoGift { get; set; }
 
         public override string ToString()

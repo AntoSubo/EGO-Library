@@ -9,7 +9,7 @@ namespace EGO_Library.ViewModels
         private readonly IAuthService _authService;
         private readonly INavigationService _navigationService;
 
-        private string _username = "admin";
+        private string _username;
         private string _password;
         private string _errorMessage;
 
@@ -73,7 +73,6 @@ namespace EGO_Library.ViewModels
             Password = string.Empty;
             ErrorMessage = string.Empty;
 
-            // вызываем событие для очистки PasswordBox в View
             RequestClearPassword?.Invoke(this, EventArgs.Empty);
         }
     }

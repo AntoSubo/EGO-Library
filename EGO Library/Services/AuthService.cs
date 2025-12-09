@@ -1,11 +1,11 @@
-﻿using EGO_Library.Data;
-using EGO_Library.Models;
+﻿using EGO_Library.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
+using EGO_Library.Data;
 
 namespace EGO_Library.Services
 {
@@ -101,12 +101,6 @@ namespace EGO_Library.Services
                 return false;
             }
         }
-
-        //public void Logout()
-        //{
-        //    _currentUser = null;
-        //    IsAuthenticated = false;
-        //}
 
         private string HashPassword(string password)
         {

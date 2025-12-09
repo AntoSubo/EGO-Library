@@ -1,5 +1,7 @@
-﻿using EGO_Library.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using EGO_Library.Models;
+using System.IO;
+using Microsoft.Extensions.Logging; 
 
 namespace EGO_Library.Data
 {
@@ -10,67 +12,72 @@ namespace EGO_Library.Data
         public DbSet<Recipes> Recipes { get; set; }
         public DbSet<User> Users { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source=ego_library.db");
-        }
+        // Путь к БД
+        public string DbPath { get; }
 
+        public AppDbContext()
+        {
+            // БД будет рядом с приложением
+            var appPath = AppDomain.CurrentDomain.BaseDirectory;
+            DbPath = Path.Combine(appPath, "ego_library.db");
+
+        }
+        // Дополнительный конструктор с параметром (чтобы не было ошибки CS1729)
+        public AppDbContext(string dbPath)
+        {
+            DbPath = dbPath;
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) // ошибки были, мб потом удалю
+        {
+            // Убедимся, что провайдер настроен
+            if (!optionsBuilder.IsConfigured)
+            {
+                // Абсолютный путь к БД
+                var fullPath = Path.GetFullPath(DbPath);
+                Console.WriteLine($"Configuring DB at: {fullPath}");
+
+                // Явно настраиваем SQLite провайдер
+                optionsBuilder.UseSqlite($"Data Source={fullPath}");
+
+                // Для отладки
+#if DEBUG
+                optionsBuilder.EnableSensitiveDataLogging();
+                optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message),
+                                   LogLevel.Information);
+#endif
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // конфигурация EgoGift
+            // Конфигурация EgoGift
             modelBuilder.Entity<EgoGift>(entity =>
             {
-                entity.HasKey(g => g.Id);
-                entity.Property(g => g.Name).IsRequired().HasMaxLength(100);
-                entity.Property(g => g.Status).HasMaxLength(50);
-                entity.HasIndex(g => g.Name);
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.Name).IsUnique();
+
+                entity.HasMany(e => e.Sources)
+                    .WithOne(s => s.EgoGift)
+                    .HasForeignKey(s => s.EgoGiftId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // конфигурация Sources
-            modelBuilder.Entity<Sources>(entity =>
-            {
-                entity.HasKey(s => s.Id);
-                entity.Property(s => s.Location).IsRequired().HasMaxLength(200);
-                entity.Property(s => s.Type).HasMaxLength(50);
-
-                entity.HasOne(s => s.EgoGift)
-                      .WithMany(g => g.Sources)
-                      .HasForeignKey(s => s.EgoGiftId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            // конфигурация Recipe
+            // Конфигурация Recipes
             modelBuilder.Entity<Recipes>(entity =>
             {
                 entity.HasKey(r => r.Id);
-                entity.Property(r => r.Name).HasMaxLength(100);
-                entity.Property(r => r.Description).HasMaxLength(500);
-                entity.Property(r => r.Location).HasMaxLength(100);
-                entity.Property(r => r.Difficulty).HasMaxLength(20);
 
-                // связь с результирующим даром
                 entity.HasOne(r => r.ResultGift)
-                      .WithMany(g => g.ResultRecipes)
-                      .HasForeignKey(r => r.ResultGiftId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                    .WithMany(g => g.ResultRecipes)
+                    .HasForeignKey(r => r.ResultGiftId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
-                // связь многие-ко-многим с требуемыми дарами
                 entity.HasMany(r => r.RequiredGifts)
-                      .WithMany(g => g.RequiredInRecipes)
-                      .UsingEntity(j => j.ToTable("RecipeRequiredGifts"));
-            });
-
-
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(u => u.Id);
-                entity.Property(u => u.Username).IsRequired().HasMaxLength(50);
-                entity.Property(u => u.PasswordHash).IsRequired().HasMaxLength(255);
-                entity.Property(u => u.Email).HasMaxLength(100);
-                entity.HasIndex(u => u.Username).IsUnique();
-
-
-                entity.Property(u => u.Id).ValueGeneratedOnAdd();
+                    .WithMany(g => g.RequiredInRecipes)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "RecipeRequiredGifts",
+                        j => j.HasOne<EgoGift>().WithMany().HasForeignKey("EgoGiftId"),
+                        j => j.HasOne<Recipes>().WithMany().HasForeignKey("RecipesId"), 
+                        j => j.HasKey("RecipesId", "EgoGiftId")); 
             });
         }
     }

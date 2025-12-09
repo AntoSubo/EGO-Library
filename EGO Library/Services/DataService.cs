@@ -1,10 +1,11 @@
-﻿using EGO_Library.Data;
-using EGO_Library.Models;
+﻿using EGO_Library.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using EGO_Library.Data;
+using System;
 
 namespace EGO_Library.Services
 {
@@ -20,12 +21,12 @@ namespace EGO_Library.Services
                 var searchLower = searchText.Trim().ToLowerInvariant();
 
                 query = query.Where(g =>
-                    EF.Functions.Like(g.Name, $"%{searchText}%") || // поиск без учета регистра
+                    EF.Functions.Like(g.Name, $"%{searchText}%") ||
                     EF.Functions.Like(g.Description, $"%{searchText}%") ||
                     EF.Functions.Like(g.Status, $"%{searchText}%") ||
                     EF.Functions.Like(g.Keywords, $"%{searchText}%") ||
                     EF.Functions.Like(g.Effect, $"%{searchText}%") ||
-                    EF.Functions.Like(g.Acquisition, $"%{searchText}%") // найти по источникам, например событие жабка
+                    EF.Functions.Like(g.Acquisition, $"%{searchText}%")
                 );
             }
 
@@ -48,9 +49,7 @@ namespace EGO_Library.Services
             try
             {
                 using var context = new AppDbContext();
-                Debug.WriteLine("DataService: Загружаем рецепты из базы...");
 
-                // Явно загружаем связанные данные
                 var recipes = await context.Recipes
                     .Include(r => r.ResultGift)
                     .Include(r => r.RequiredGifts)
@@ -58,19 +57,10 @@ namespace EGO_Library.Services
 
                 Debug.WriteLine($"DataService: Загружено {recipes.Count} рецептов");
 
-                foreach (var recipe in recipes)
-                {
-                    Debug.WriteLine($"  - {recipe.Name}");
-                    Debug.WriteLine($"    ResultGift: {recipe.ResultGift?.Name}");
-                    Debug.WriteLine($"    RequiredGifts: {recipe.RequiredGifts?.Count}");
-                }
-
                 return recipes;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"DataService ОШИБКА: {ex.Message}");
-                Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 return new List<Recipes>();
             }
         }

@@ -21,7 +21,6 @@
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
 	</ItemGroup>
 
-	<!-- АВТОМАТИЧЕСКАЯ НАСТРОЙКА ДЛЯ ВСЕХ ФАЙЛОВ В ПАПКЕ RESOURCES -->
 	<ItemGroup>
 		<Content Include="Resources\**\*\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
