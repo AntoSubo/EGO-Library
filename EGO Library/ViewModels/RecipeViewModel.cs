@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 
 namespace EGO_Library.ViewModels
 {
@@ -18,6 +19,9 @@ namespace EGO_Library.ViewModels
         private ObservableCollection<Recipes> _filteredRecipes = new ObservableCollection<Recipes>();
         private string _searchText = string.Empty;
         private string _selectedDifficulty = "All";
+        private EgoGift _zoomedGift;
+        private bool _isImageZoomed;
+        private double _imageZoomLevel = 1.0;
 
         public ObservableCollection<Recipes> Recipes => _filteredRecipes;
 
@@ -49,6 +53,52 @@ namespace EGO_Library.ViewModels
             }
         }
 
+        public EgoGift ZoomedGift
+        {
+            get => _zoomedGift;
+            set
+            {
+                if (_zoomedGift != value)
+                {
+                    _zoomedGift = value;
+                    OnPropertyChanged(nameof(ZoomedGift));
+                }
+            }
+        }
+
+        public bool IsImageZoomed
+        {
+            get => _isImageZoomed;
+            set
+            {
+                if (_isImageZoomed != value)
+                {
+                    _isImageZoomed = value;
+                    OnPropertyChanged(nameof(IsImageZoomed));
+
+                    // Сбрасываем зум при закрытии
+                    if (!value)
+                    {
+                        ImageZoomLevel = 1.0;
+                    }
+                }
+            }
+        }
+
+        public double ImageZoomLevel
+        {
+            get => _imageZoomLevel;
+            set
+            {
+                var newValue = Math.Max(0.5, Math.Min(5.0, value));
+                if (_imageZoomLevel != newValue)
+                {
+                    _imageZoomLevel = newValue;
+                    OnPropertyChanged(nameof(ImageZoomLevel));
+                }
+            }
+        }
+
         public List<string> AvailableDifficulties { get; } = new List<string>
         {
             "All", "Easy", "Medium", "Hard"
@@ -59,6 +109,11 @@ namespace EGO_Library.ViewModels
 
         public ICommand GoBackCommand { get; }
         public ICommand ClearFiltersCommand { get; }
+        public ICommand ZoomImageCommand { get; }
+        public ICommand CloseZoomCommand { get; }
+        public ICommand ZoomInCommand { get; }
+        public ICommand ZoomOutCommand { get; }
+        public ICommand ResetZoomCommand { get; }
 
         public RecipeViewModel(INavigationService navigationService, DataService dataService)
         {
@@ -68,22 +123,42 @@ namespace EGO_Library.ViewModels
             GoBackCommand = new RelayCommand(_ => _navigationService.GoBack());
             ClearFiltersCommand = new RelayCommand(_ => ClearFilters());
 
+            ZoomImageCommand = new RelayCommand(obj =>
+            {
+                if (obj is EgoGift gift)
+                {
+                    ZoomImage(gift);
+                }
+            });
+
+            CloseZoomCommand = new RelayCommand(_ => CloseImageZoom());
+            ZoomInCommand = new RelayCommand(_ => ZoomIn());
+            ZoomOutCommand = new RelayCommand(_ => ZoomOut());
+            ResetZoomCommand = new RelayCommand(_ => ResetZoom());
+
             _ = LoadRecipesAsync();
         }
 
         private async Task LoadRecipesAsync()
         {
-            var recipes = await _dataService.GetAllRecipesAsync();
-
-            if (recipes != null)
+            try
             {
-                _allRecipes = new ObservableCollection<Recipes>(recipes);
-            }
+                var recipes = await _dataService.GetAllRecipesAsync();
 
-            FilterRecipes();
-            OnPropertyChanged(nameof(Recipes));
-            OnPropertyChanged(nameof(TotalRecipes));
-            OnPropertyChanged(nameof(HasRecipes));
+                if (recipes != null)
+                {
+                    _allRecipes = new ObservableCollection<Recipes>(recipes);
+                }
+
+                FilterRecipes();
+                OnPropertyChanged(nameof(Recipes));
+                OnPropertyChanged(nameof(TotalRecipes));
+                OnPropertyChanged(nameof(HasRecipes));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[RecipeViewModel] Ошибка загрузки: {ex.Message}");
+            }
         }
 
         private void FilterRecipes()
@@ -104,5 +179,25 @@ namespace EGO_Library.ViewModels
             SearchText = string.Empty;
             SelectedDifficulty = "All";
         }
+
+        private void ZoomImage(EgoGift gift)
+        {
+            if (gift != null)
+            {
+                ZoomedGift = gift;
+                IsImageZoomed = true;
+                ImageZoomLevel = 1.0;
+            }
+        }
+
+        public void CloseImageZoom()
+        {
+            IsImageZoomed = false;
+            ZoomedGift = null;
+        }
+
+        private void ZoomIn() => ImageZoomLevel += 0.2;
+        private void ZoomOut() => ImageZoomLevel -= 0.2;
+        private void ResetZoom() => ImageZoomLevel = 1.0;
     }
 }
