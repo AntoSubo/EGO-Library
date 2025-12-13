@@ -12,8 +12,6 @@ namespace EGO_Library.ViewModels
         private string _username;
         private string _password;
         private string _errorMessage;
-
-        // событие для очистки пароля в View
         public event EventHandler RequestClearPassword;
 
         public string Username
@@ -66,10 +64,10 @@ namespace EGO_Library.ViewModels
                 ErrorMessage = "Неверное имя пользователя или пароль";
             }
         }
-
+        
         private void Clear()
         {
-            Username = "admin";
+            Username = string.Empty; ;
             Password = string.Empty;
             ErrorMessage = string.Empty;
 

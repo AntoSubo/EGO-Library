@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows;
 using EGO_Library.Data;
 
@@ -35,7 +33,7 @@ namespace EGO_Library.Services
                 using var context = new AppDbContext();
                 var user = context.Users.FirstOrDefault(u => u.Username == username);
 
-                if (user != null && VerifyPassword(password, user.PasswordHash))
+                if (user != null && user.Password == password)
                 {
                     _currentUser = user;
                     user.LastLogin = DateTime.Now;
@@ -68,7 +66,7 @@ namespace EGO_Library.Services
                 var user = new User
                 {
                     Username = username,
-                    PasswordHash = HashPassword(password),
+                    Password = password, 
                     Email = email,
                     CreatedDate = DateTime.Now,
                     LastLogin = DateTime.Now
@@ -100,20 +98,6 @@ namespace EGO_Library.Services
                 MessageBox.Show($"Ошибка при проверке пользователя: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-        }
-
-        private string HashPassword(string password)
-        {
-            using var sha256 = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(password);
-            var hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
-        }
-
-        private bool VerifyPassword(string password, string storedHash)
-        {
-            var hash = HashPassword(password);
-            return hash == storedHash;
         }
     }
 }

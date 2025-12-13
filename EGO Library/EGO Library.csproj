@@ -31,7 +31,9 @@
 	  <Content Remove="Resources\Images\EGO\Tier1\Кара покойных.png" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Resource Include="Resources\Images\EGO\Tier1\Безглавый портрет.png" />
+	  <Resource Include="Resources\Images\EGO\Tier1\Безглавый портрет.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
 	  <Resource Include="Resources\Images\EGO\Tier1\Кара покойных.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
