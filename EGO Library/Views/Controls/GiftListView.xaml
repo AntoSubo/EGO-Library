@@ -26,7 +26,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стили для кнопок в общем стиле -->
         <Style x:Key="DarkButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#404040"/>
             <Setter Property="Foreground" Value="White"/>
@@ -64,8 +63,6 @@
             <ColumnDefinition Width="220"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
-        <!-- Левая панель фильтров -->
         <Border Grid.Column="0" 
                 Background="#2D2D30" 
                 BorderBrush="#404040"
@@ -79,8 +76,6 @@
                            FontWeight="Bold" 
                            Foreground="White"
                            Margin="0,0,0,15"/>
-
-                <!-- Поиск -->
                 <TextBlock Text="Search" 
                            FontWeight="SemiBold" 
                            Foreground="#CCCCCC"
@@ -93,7 +88,6 @@
                          Foreground="White"
                          BorderBrush="#555555"/>
 
-                <!-- Уровень -->
                 <TextBlock Text="Tier" 
                            FontWeight="SemiBold" 
                            Foreground="#CCCCCC"
@@ -110,8 +104,6 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-
-                <!-- Статус -->
                 <TextBlock Text="Status" 
                            FontWeight="SemiBold" 
                            Foreground="#CCCCCC"
@@ -122,8 +114,6 @@
                           Background="#3C3C3C"
                           Foreground="Black"
                           BorderBrush="#555555"/>
-
-                <!-- Кнопки -->
                 <Button Content="Clear Filters" 
                         Height="35"
                         Command="{Binding ClearFiltersCommand}"
@@ -132,14 +122,11 @@
             </StackPanel>
         </Border>
 
-        <!-- Правая панель с дарами -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-
-            <!-- Верхняя панель с кнопками -->
             <DockPanel Grid.Row="0" Margin="0,0,0,15">
                 <TextBlock Text="EGO Library" 
                            FontSize="22" 
@@ -167,8 +154,6 @@
                             Command="{Binding ShowHelpCommand}"/>
                 </StackPanel>
             </DockPanel>
-
-            <!-- Список даров -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Gifts}">
                     <ItemsControl.ItemsPanel>
@@ -185,7 +170,6 @@
                                     Height="160"
                                     MouseLeftButtonDown="Border_MouseLeftButtonDown">
                                 <StackPanel>
-                                    <!-- ИЗОБРАЖЕНИЕ вместо иконки -->
                                     <Border Background="#1E1E1E" 
                                             CornerRadius="6" 
                                             Padding="2"
@@ -197,8 +181,6 @@
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"/>
                                     </Border>
-
-                                    <!-- Уровень -->
                                     <Border Background="#FFD700" 
                                             CornerRadius="10" 
                                             Padding="4,1"
@@ -210,8 +192,6 @@
                                                    Foreground="Black"
                                                    TextAlignment="Center"/>
                                     </Border>
-
-                                    <!-- Название -->
                                     <TextBlock Text="{Binding Name}" 
                                                FontWeight="Bold" 
                                                FontSize="12" 
@@ -220,8 +200,6 @@
                                                Foreground="White" 
                                                Margin="0,0,0,5"
                                                MaxHeight="32"/>
-
-                                    <!-- Статус -->
                                     <Border Background="#404040" 
                                             CornerRadius="10" 
                                             Padding="4,2" 

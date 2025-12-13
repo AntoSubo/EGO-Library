@@ -18,7 +18,7 @@ namespace EGO_Library.Converters
                     string baseDir = AppDomain.CurrentDomain.BaseDirectory;
                     string fullPath = Path.Combine(baseDir, imagePath);
 
-                    // пробуем как файл в файловой системе
+                    // как файл в файловой системе
                     if (File.Exists(fullPath))
                     {
                         var bitmap = new BitmapImage();
@@ -29,7 +29,7 @@ namespace EGO_Library.Converters
                         return bitmap;
                     }
 
-                    // Вариант 1: Для контента (Content)
+                    // Вариант 1: Для контента 
                     string relativePath = imagePath.Replace('\\', '/');
                     if (!relativePath.StartsWith("/"))
                         relativePath = "/" + relativePath;

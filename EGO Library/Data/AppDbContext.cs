@@ -27,29 +27,20 @@ namespace EGO_Library.Data
         {
             DbPath = dbPath;
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) // ошибки были, мб потом удалю
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // Убедимся, что провайдер настроен
             if (!optionsBuilder.IsConfigured)
             {
-                // Абсолютный путь к БД
                 var fullPath = Path.GetFullPath(DbPath);
                 Console.WriteLine($"Configuring DB at: {fullPath}");
-
-                // Явно настраиваем SQLite провайдер
                 optionsBuilder.UseSqlite($"Data Source={fullPath}");
-
-                // Для отладки
-#if DEBUG
                 optionsBuilder.EnableSensitiveDataLogging();
                 optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message),
                                    LogLevel.Information);
-#endif
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Конфигурация EgoGift
             modelBuilder.Entity<EgoGift>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -60,8 +51,6 @@ namespace EGO_Library.Data
                     .HasForeignKey(s => s.EgoGiftId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
-
-            // Конфигурация Recipes
             modelBuilder.Entity<Recipes>(entity =>
             {
                 entity.HasKey(r => r.Id);

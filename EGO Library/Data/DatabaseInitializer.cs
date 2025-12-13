@@ -115,7 +115,7 @@ namespace EGO_Library.Data
             await context.SaveChangesAsync();
         }
 
-        private class RecipeData
+        private class RecipeData //чтоб не полетела инициализация если нужный дар пока не добавлен 
         {
             public string Name { get; set; } = string.Empty;
             public string Description { get; set; } = string.Empty;
