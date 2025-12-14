@@ -36,7 +36,6 @@ namespace EGO_Library.ViewModels
             NavigateToGiftListCommand = new RelayCommand(_ => _navigationService.NavigateToGiftList());
             NavigateToRecipesCommand = new RelayCommand(_ => _navigationService.NavigateToRecipes());
             NavigateToAboutCommand = new RelayCommand(_ => _navigationService.NavigateToAbout());
-            //LogoutCommand = new RelayCommand(_ => _authService.Logout());
 
             if (_authService.IsAuthenticated)
             {

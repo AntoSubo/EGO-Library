@@ -206,8 +206,6 @@
                                                        Foreground="White"
                                                        TextAlignment="Center"/>
                                         </Border>
-
-                                        <!-- Кнопка для увеличения изображения -->
                                         <Button Command="{Binding DataContext.ZoomImageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding ResultGift}"
                                                 Background="Transparent"
@@ -242,8 +240,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-
-        <!-- Попап для увеличенного изображения -->
         <Popup IsOpen="{Binding IsImageZoomed}"
                Placement="Center" 
                StaysOpen="False"

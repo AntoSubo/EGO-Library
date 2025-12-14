@@ -35,19 +35,13 @@ namespace EGO_Library.Data
         private static async Task DataAsync(AppDbContext context)
         {
 
-            // 1. Создаем дары
+            // 1.  дары
             var gifts = CreateGifts();
             await context.EgoGifts.AddRangeAsync(gifts);
             await context.SaveChangesAsync();
-            Console.WriteLine($"Добавлено {gifts.Count} EGO даров");
 
-            // 2. Создаем рецепты
+            // 2.  рецепты
             await CreateRecipesAsync(context);
-            Console.WriteLine($"Рецепты созданы");
-
-            // 3. Проверяем целостность
-            var giftNames = await context.EgoGifts.Select(g => g.Name).ToListAsync();
-            Console.WriteLine($"Проверено {giftNames.Count} уникальных даров");
         }
 
         private static List<EgoGift> CreateGifts()
@@ -115,7 +109,7 @@ namespace EGO_Library.Data
             await context.SaveChangesAsync();
         }
 
-        private class RecipeData //чтоб не полетела инициализация если нужный дар пока не добавлен 
+        private class RecipeData //чтоб не полетела инициализация если нужный дар пока не добавлен . точно не костыль, это вообще не костыль
         {
             public string Name { get; set; } = string.Empty;
             public string Description { get; set; } = string.Empty;
