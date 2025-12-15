@@ -32,7 +32,6 @@ namespace EGO_Library.Data
             if (!optionsBuilder.IsConfigured)
             {
                 var fullPath = Path.GetFullPath(DbPath);
-                Console.WriteLine($"Configuring DB at: {fullPath}");
                 optionsBuilder.UseSqlite($"Data Source={fullPath}");
                 optionsBuilder.EnableSensitiveDataLogging();
                 optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message),

@@ -157,7 +157,6 @@ namespace EGO_Library.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[RecipeViewModel] Ошибка загрузки: {ex.Message}");
             }
         }
 
